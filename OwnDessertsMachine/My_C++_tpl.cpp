@@ -78,25 +78,61 @@ public:
     }
 };
 
-class Shake : public Dessert {
+class ReciptItem
+{
 private:
+    double price;
+    string name;
 public:
-    Shake(string name, double price)
-        :Dessert(name, price)
+    ReciptItem(double price, string name)
+        :price(price), name(name)
     {
 
     }
+    double getPrice()
+    {
+        return this->price;
+    }
+    string getName()
+    {
+        return this->name;
+    }
 };
 
-class DessertsMachine // Dawid
+class Receipt
+{
+private:
+    vector <ReciptItem> reciptItemList;
+public:
+    Receipt()
+    {
+    
+    }
+    void addItemToReceipt(ReciptItem newReceiptItem)
+    {
+        reciptItemList.push_back(newReceiptItem);
+    }
+    void generateRecipt()
+    {
+        cout << "\n\n\n====paragon======\n";
+        for (int i = 0; i < this->reciptItemList.size(); i++)
+        {
+            cout << "nazwa produktu: " << this->reciptItemList.at(i).getName() << " cena: " << this->reciptItemList.at(i).getPrice() << "\n";
+        }
+        cout << "koniec paragonu";
+    }
+};
+
+class DessertsMachine
 {
 private:
 
     vector <Coffee> coffeeList;
     vector <Cake> cakeList;
     vector <IceCream> iceCreamList;
-    
+    Receipt machineReceipt;
     string machineName;
+    typedef int VectorIndex;
 
 public:
     DessertsMachine(string machineName)
@@ -145,6 +181,41 @@ public:
         
     }
 
+    int iceCreamMenu()
+    {
+
+        int iceCreamSelect;
+        
+        for (int i = 0; i < this->iceCreamList.size(); i++)
+        {
+            
+            cout << i + 1 << " - " << this->iceCreamList.at(i).getName() << "\n";
+        }
+        cout << "podaj liczbe: ";
+        cin >> iceCreamSelect;
+        iceCreamSelect--;
+        return iceCreamSelect;
+    }
+
+    vector <VectorIndex> scoopsSelectMenu(int scoopsAmount)
+    {
+        vector <VectorIndex> selectedScoopsIndexes;
+        int maxScoopsAmount = 3;
+        if (maxScoopsAmount <= 3)
+        {
+            for (int i = 0; i < scoopsAmount; i++)
+            {
+                cout << "wybierz smak: " << i + 1 << "\n";
+                selectedScoopsIndexes.push_back(iceCreamMenu());
+            }
+            return selectedScoopsIndexes;
+        }
+        else {
+            cout << "podano za duzo galek";
+            return selectedScoopsIndexes;
+        }
+    }
+
     void frontEndCore()
     {
         int selectedProductType;
@@ -158,6 +229,19 @@ public:
         if (selectedProductType == 1) //Lody
         {
             cout << "wybrales typ: lody\n";
+            int scoopsAmount;
+            cout << "ile galek lodow chcesz?\n";
+            cin >> scoopsAmount;
+            vector <VectorIndex> selectedScoopsIndexes = scoopsSelectMenu(scoopsAmount);
+            for (int i = 0; i < selectedScoopsIndexes.size(); i++)
+            {
+                VectorIndex selectedIndex = selectedScoopsIndexes.at(i);
+                double selectScoopPrice = this->iceCreamList.at(selectedIndex).getPrice();
+                string selectScoopName = this->iceCreamList.at(selectedIndex).getName();
+                this->machineReceipt.addItemToReceipt(ReciptItem(selectScoopPrice, selectScoopName));
+            }
+            //int iceCreamSelect = iceCreamMenu();
+            
         }
         else if (selectedProductType == 2) //Ciasto
         {
@@ -167,9 +251,21 @@ public:
         {
             cout << "wybrales typ: kawa\n";
             int coffeeSelect =  coffeeMenu();
-            cout << "zamowiono kawe: " << this->coffeeList.at(coffeeSelect).getPrice();
+            double selectCoffeePrice =  this->coffeeList.at(coffeeSelect).getPrice();
+            string selectCoffeeName = this->coffeeList.at(coffeeSelect).getName();
             int isMilk = askIsMilk();
+            if (isMilk)
+            {
+                selectCoffeePrice += 1;
+            }
+            
+            this->machineReceipt.addItemToReceipt(ReciptItem(selectCoffeePrice, selectCoffeeName));
+
         }
+
+        this->machineReceipt.generateRecipt();
+
+
     }
 };
 
@@ -208,6 +304,6 @@ int main() {
 //TODO:
 /*
 1. front-end core
-2. ogólna klasa deser i pochone tej klasy
-3.
+2. zabezpieczyæ menu przez z³ym wyborem
+3. zrobiæ klase paragon
 */
