@@ -1,8 +1,10 @@
 #include <iostream>
 #include <list>
 #include <vector>
+#include "Source.cpp"
 using namespace std;
 
+typedef int VectorIndex;
 void PRINT_DEV(string msg)
 {
     bool is_print = true;
@@ -12,6 +14,7 @@ void PRINT_DEV(string msg)
     }
 }
 
+//--- start DessertAddon section ------
 class DessertAddon {
 private:
     string name;
@@ -32,21 +35,23 @@ public:
     }
 };
 
-class IceCreamCupType: public DessertAddon
+class IceCreamCupType : public DessertAddon
 {
 private:
     int maxScoops;
 public:
     IceCreamCupType(string name, double price, int maxScoops)
-        :maxScoops(maxScoops), DessertAddon(name,  price)
+        :maxScoops(maxScoops), DessertAddon(name, price)
     {}
     int getMaxScoops()
     {
         return this->maxScoops;
     }
 };
+//--- end DessertAddon section ------
 
-class Dessert 
+//--- start Dessert section ------
+class Dessert
 {
 private:
     string name;
@@ -56,7 +61,7 @@ public:
     Dessert(string name, double price)
         :name(name), price(price)
     {
-        
+
     }
     string getName()
     {
@@ -72,13 +77,11 @@ class Cake : public Dessert {
 private:
 public:
     Cake(string name, double price)
-        :Dessert(name,price)
+        :Dessert(name, price)
     {
 
     }
 };
-
-
 
 class Coffee : public Dessert {
 private:
@@ -112,11 +115,11 @@ private:
     static vector <IceCreamCupType> iceCreamCupTypeList;
     static vector <IceCreamCategory> avaiableCategoryList;
 public:
-    
+
     IceCream(string name, double price)
         :Dessert(name, price)
     {
-        
+
     }
     static void addNewCupType(IceCreamCupType newType)
     {
@@ -139,6 +142,71 @@ public:
 };
 vector <IceCreamCupType> IceCream::iceCreamCupTypeList;
 
+class IceCreamControler
+{
+private:
+    vector <IceCream> iceCreamList;
+public:
+    IceCreamControler()
+    {
+
+    }
+    void addIceCreamToList(IceCream newiceCream)
+    {
+        this->iceCreamList.push_back(newiceCream);
+    }
+    //------------------------------------
+    // ice cream section
+
+    IceCream getElementFormIceCreamList(int index)
+    {
+        return this->iceCreamList.at(index);
+    }
+
+    int iceCreamMenu()
+    {
+
+        int iceCreamSelect;
+
+        for (int i = 0; i < this->iceCreamList.size(); i++)
+        {
+
+            cout << i + 1 << " - " << this->iceCreamList.at(i).getName() << "\n";
+        }
+        cout << "podaj liczbe: ";
+        cin >> iceCreamSelect;
+        iceCreamSelect--;
+        return iceCreamSelect;
+    }
+
+    vector <VectorIndex> scoopsSelectMenu(int scoopsAmount)
+    {
+        vector <VectorIndex> selectedScoopsIndexes;
+        for (int i = 0; i < scoopsAmount; i++)
+        {
+            cout << "wybierz smak: " << i + 1 << "\n";
+            selectedScoopsIndexes.push_back(iceCreamMenu());
+        }
+        return selectedScoopsIndexes;
+    }
+
+    int cupTypeSelect()
+    {
+        IceCream::printAvaiableCupList();
+        cout << "podaj numer: ";
+        int select;
+        cin >> select;
+        select--;
+        return select;
+    }
+
+    // ice cream section
+    //------------------------------------
+};
+
+//--- end Dessert section ------
+
+//--- start Recipt section ------
 class ReciptItem
 {
 private:
@@ -167,7 +235,7 @@ private:
 public:
     Receipt()
     {
-    
+
     }
     void addItemToReceipt(ReciptItem newReceiptItem)
     {
@@ -183,17 +251,18 @@ public:
         cout << "koniec paragonu";
     }
 };
+//--- end Recipt section ------
+
+
 
 class DessertsMachine
 {
 private:
-
     vector <Coffee> coffeeList;
     vector <Cake> cakeList;
-    vector <IceCream> iceCreamList;
-    Receipt machineReceipt;
-    string machineName;
-    typedef int VectorIndex;
+    IceCreamControler iceCreamControler;
+    Receipt machineReceipt; // do przeniesienia
+    string machineName;// do przeniesienia
 
 public:
     DessertsMachine(string machineName)
@@ -208,10 +277,6 @@ public:
     void addCakeToList(Cake newCake)
     {
         this->cakeList.push_back(newCake);
-    }
-    void addiceCreamToList(IceCream newiceCream)
-    {
-        this->iceCreamList.push_back(newiceCream);
     }
     
     int coffeeMenu()
@@ -240,49 +305,9 @@ public:
             return false;
         }
         
-    }
+    }// do przeniesienia
 
-    //------------------------------------
-    // ice cream section
-    int iceCreamMenu()
-    {
-
-        int iceCreamSelect;
-
-        for (int i = 0; i < this->iceCreamList.size(); i++)
-        {
-
-            cout << i + 1 << " - " << this->iceCreamList.at(i).getName() << "\n";
-        }
-        cout << "podaj liczbe: ";
-        cin >> iceCreamSelect;
-        iceCreamSelect--;
-        return iceCreamSelect;
-    }
-
-    vector <VectorIndex> scoopsSelectMenu(int scoopsAmount)
-    {
-        vector <VectorIndex> selectedScoopsIndexes;
-            for (int i = 0; i < scoopsAmount; i++)
-            {
-                cout << "wybierz smak: " << i + 1 << "\n";
-                selectedScoopsIndexes.push_back(iceCreamMenu());
-            }
-            return selectedScoopsIndexes;
-    }
-
-    int cupTypeSelect()
-    {
-        IceCream::printAvaiableCupList();
-        cout << "podaj numer: ";
-        int select;
-        cin >> select;
-        select--;
-        return select;
-    }
-
-    // ice cream section
-    //------------------------------------
+    
 
     void frontEndCore()
     {
@@ -299,7 +324,7 @@ public:
             cout << "wybrales typ: lody\n";
             // -- cup type select --
 
-            int selectedCupIndex = this->cupTypeSelect();
+            int selectedCupIndex = iceCreamControler.cupTypeSelect();
             int maxAmountofScoopsPerCup = IceCream::getMaxScoopsAmountFromCupList(selectedCupIndex);
 
             // -- scoops amounts select --
@@ -320,12 +345,12 @@ public:
             } while (inputedScoopsAmountIsError);
             
             // -- scoops tastes select --
-            vector <VectorIndex> selectedScoopsIndexes = scoopsSelectMenu(inputedscoopsAmount); 
+            vector <VectorIndex> selectedScoopsIndexes = iceCreamControler.scoopsSelectMenu(inputedscoopsAmount);
             for (int i = 0; i < selectedScoopsIndexes.size(); i++)
             {
                 VectorIndex selectedIndex = selectedScoopsIndexes.at(i);
-                double selectScoopPrice = this->iceCreamList.at(selectedIndex).getPrice();
-                string selectScoopName = this->iceCreamList.at(selectedIndex).getName();
+                double selectScoopPrice = iceCreamControler.getElementFormIceCreamList(selectedIndex).getPrice();
+                string selectScoopName = iceCreamControler.getElementFormIceCreamList(selectedIndex).getName();
                 this->machineReceipt.addItemToReceipt(ReciptItem(selectScoopPrice, selectScoopName));
             }
         }
@@ -346,47 +371,45 @@ public:
             }
             
             this->machineReceipt.addItemToReceipt(ReciptItem(selectCoffeePrice, selectCoffeeName));
-
         }
-
         this->machineReceipt.generateRecipt();
+    }
+
+    void machineSetup()
+    {
+        //1. Budujemy Cake1 .. n
 
 
+        this->addCoffeeToList(Coffee("coffee1", 11234));
+        this->addCoffeeToList(Coffee("coffee3", 22344323543654));
+
+        /*this->addShakeToList(Shake("shake1",11));
+        this->addShakeToList(Shake("shake2", 22));
+        this->addShakeToList(Shake("shake3", 33));
+        this->addShakeToList(Shake("shake4", 44));*/
+
+        this->addCakeToList(Cake("cake1", 1));
+        this->addCakeToList(Cake("cake2", 2));
+        this->addCakeToList(Cake("cake3", 3));
+
+        IceCream::addNewCupType(IceCreamCupType("slodki rozek", 1.5, 4));
+        IceCream::addNewCupType(IceCreamCupType("zwykly", 0.5, 2));
+        IceCream::addNewCupType(IceCreamCupType("zwykly-duzy", 1.1, 3));
+        iceCreamControler.addIceCreamToList(IceCream("lody1", 44));
+        iceCreamControler.addIceCreamToList(IceCream("lody2", 55));
+        iceCreamControler.addIceCreamToList(IceCream("lody3", 66));
+
+        //machineToBuild.addShakeToList(Shake("shake1"));
+        //machineToBuild.addShakeToList(Shake("shake2"));
+        //3. dodajemy do maszyny ciastka , lody ... machineToBuild
     }
 };
 
-void machineSetup(DessertsMachine& machineToBuild)
-{
-    //1. Budujemy Cake1 .. n
 
-
-    machineToBuild.addCoffeeToList(Coffee("coffee1", 11234));
-    machineToBuild.addCoffeeToList(Coffee("coffee3",22344323543654));
-
-    /*machineToBuild.addShakeToList(Shake("shake1",11));
-    machineToBuild.addShakeToList(Shake("shake2", 22));
-    machineToBuild.addShakeToList(Shake("shake3", 33));
-    machineToBuild.addShakeToList(Shake("shake4", 44));*/
-
-    machineToBuild.addCakeToList(Cake("cake1",1));
-    machineToBuild.addCakeToList(Cake("cake2", 2));
-    machineToBuild.addCakeToList(Cake("cake3", 3));
-
-    IceCream::addNewCupType(IceCreamCupType("slodki rozek", 1.5, 4));
-    IceCream::addNewCupType(IceCreamCupType("zwykly", 0.5, 2));
-    IceCream::addNewCupType(IceCreamCupType("zwykly-duzy", 1.1, 3));
-    machineToBuild.addiceCreamToList(IceCream("lody1", 44));
-    machineToBuild.addiceCreamToList(IceCream("lody2", 55));
-    machineToBuild.addiceCreamToList(IceCream("lody3", 66));
-
-    //machineToBuild.addShakeToList(Shake("shake1"));
-    //machineToBuild.addShakeToList(Shake("shake2"));
-    //3. dodajemy do maszyny ciastka , lody ... machineToBuild
-}
 
 int main() {
     DessertsMachine machine1("machine1");
-    machineSetup(machine1);
+    machine1.machineSetup();
     machine1.frontEndCore();
 }
 
