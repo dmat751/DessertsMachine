@@ -430,18 +430,19 @@ int main() {
     machine1.frontEndCore();
 }
 
-//TODO:
+//TODO: skonczylme na refactoringu funkcji menu line 201
 /*
+test
 1. front-end core
-2. zabezpieczyæ menu przez z³ym wyborem
-3. zrobiæ klase paragon -> done
-4. dopisaæ pozosta³e funckcjonanosci
-5. zrobiæ segregace lodów po typie np. bez laktozy, bez glutenu,
-6. zrobiæ obs³uge dodatkow dla produktów
-7. zrobiæ mo¿liwoœæ ponownego wyboru np ¿eby mo¿na by³o kupiæ 2 lody i 3 kawy
-8. funckje setup przerzuæ do klasy machine
+2. zabezpieczyï¿½ menu przez zï¿½ym wyborem
+3. zrobiï¿½ klase paragon -> done
+4. dopisaï¿½ pozostaï¿½e funckcjonanosci
+5. zrobiï¿½ segregace lodï¿½w po typie np. bez laktozy, bez glutenu,
+6. zrobiï¿½ obsï¿½uge dodatkow dla produktï¿½w
+7. zrobiï¿½ moï¿½liwoï¿½ï¿½ ponownego wyboru np ï¿½eby moï¿½na byï¿½o kupiï¿½ 2 lody i 3 kawy
+8. funckje setup przerzuï¿½ do klasy machine
 
 
-skonczy³em na dodaniu kubeczka dla lodow
+skonczyï¿½em na dodaniu kubeczka dla lodow
 
 */
