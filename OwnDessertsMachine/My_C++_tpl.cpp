@@ -14,6 +14,62 @@ void PRINT_DEV(string msg)
     }
 }
 
+//--- start Recipt section ------
+class ReciptItem
+{
+private:
+    double price;
+    string name;
+public:
+    ReciptItem(double price, string name)
+        :price(price), name(name)
+    {
+
+    }
+    double getPrice()
+    {
+        return this->price;
+    }
+    string getName()
+    {
+        return this->name;
+    }
+};
+
+class Receipt
+{
+private:
+    vector <ReciptItem> reciptItemList;
+public:
+    Receipt()
+    {
+
+    }
+    void addItemToReceipt(ReciptItem newReceiptItem)
+    {
+        reciptItemList.push_back(newReceiptItem);
+    }
+    void addReceiptToEachOther(Receipt& receiptToAdd)
+    {
+        int itemAmount = receiptToAdd.reciptItemList.size();
+        for(int i = 0; i < itemAmount; i++)
+        {
+            this->addItemToReceipt(receiptToAdd.reciptItemList.at(i));
+        }
+    }
+    void generateRecipt()
+    {
+        cout << "\n\n\n====paragon======\n";
+        for (int i = 0; i < this->reciptItemList.size(); i++)
+        {
+            cout << "nazwa produktu: " << this->reciptItemList.at(i).getName() << " cena: " << this->reciptItemList.at(i).getPrice() << "\n";
+        }
+        cout << "koniec paragonu";
+    }
+    
+};
+//--- end Recipt section ------
+
 //--- start DessertAddon section ------
 class DessertAddon {
 private:
@@ -146,24 +202,10 @@ class IceCreamControler
 {
 private:
     vector <IceCream> iceCreamList;
-public:
-    IceCreamControler()
-    {
 
-    }
-    void addIceCreamToList(IceCream newiceCream)
-    {
-        this->iceCreamList.push_back(newiceCream);
-    }
-    //------------------------------------
-    // ice cream section
-
-    IceCream getElementFormIceCreamList(int index)
-    {
-        return this->iceCreamList.at(index);
-    }
-
-    int iceCreamMenu()
+    //-------------------
+  
+    int iceCreamTasteSelect()
     {
 
         int iceCreamSelect;
@@ -185,7 +227,7 @@ public:
         for (int i = 0; i < scoopsAmount; i++)
         {
             cout << "wybierz smak: " << i + 1 << "\n";
-            selectedScoopsIndexes.push_back(iceCreamMenu());
+            selectedScoopsIndexes.push_back(iceCreamTasteSelect());
         }
         return selectedScoopsIndexes;
     }
@@ -199,59 +241,64 @@ public:
         select--;
         return select;
     }
+    //-------------------
+public:
+    IceCreamControler()
+    {
 
-    // ice cream section
-    //------------------------------------
+    }
+    void addIceCreamToList(IceCream newiceCream)
+    {
+        this->iceCreamList.push_back(newiceCream);
+    }
+
+    IceCream getElementFormIceCreamList(int index)
+    {
+        return this->iceCreamList.at(index);
+    }
+    Receipt menuControler()
+    {
+        Receipt iceCreamReceipt;
+        cout << "wybrales typ: lody\n";
+        // -- cup type select --
+
+        int selectedCupIndex = this->cupTypeSelect();
+        int maxAmountofScoopsPerCup = IceCream::getMaxScoopsAmountFromCupList(selectedCupIndex);
+
+        // -- scoops amounts select --
+        int inputedscoopsAmount;
+        bool inputedScoopsAmountIsError = true;
+        do
+        {
+            cout << "ile galek lodow chcesz?\n";
+            cin >> inputedscoopsAmount;
+            if (inputedscoopsAmount <= maxAmountofScoopsPerCup)
+            {
+                inputedScoopsAmountIsError = false;
+            }
+            else
+            {
+                cout << "podano zla ilosc galek lodow\n";
+            }
+        } while (inputedScoopsAmountIsError);
+
+        // -- scoops tastes select --
+        vector <VectorIndex> selectedScoopsIndexes = this->scoopsSelectMenu(inputedscoopsAmount);
+        for (int i = 0; i < selectedScoopsIndexes.size(); i++)
+        {
+            VectorIndex selectedIndex = selectedScoopsIndexes.at(i);
+            double selectScoopPrice = this->getElementFormIceCreamList(selectedIndex).getPrice();
+            string selectScoopName = this->getElementFormIceCreamList(selectedIndex).getName();
+            iceCreamReceipt.addItemToReceipt(ReciptItem(selectScoopPrice, selectScoopName));
+        }
+
+        return iceCreamReceipt;
+    }
 };
 
 //--- end Dessert section ------
 
-//--- start Recipt section ------
-class ReciptItem
-{
-private:
-    double price;
-    string name;
-public:
-    ReciptItem(double price, string name)
-        :price(price), name(name)
-    {
 
-    }
-    double getPrice()
-    {
-        return this->price;
-    }
-    string getName()
-    {
-        return this->name;
-    }
-};
-
-class Receipt
-{
-private:
-    vector <ReciptItem> reciptItemList;
-public:
-    Receipt()
-    {
-
-    }
-    void addItemToReceipt(ReciptItem newReceiptItem)
-    {
-        reciptItemList.push_back(newReceiptItem);
-    }
-    void generateRecipt()
-    {
-        cout << "\n\n\n====paragon======\n";
-        for (int i = 0; i < this->reciptItemList.size(); i++)
-        {
-            cout << "nazwa produktu: " << this->reciptItemList.at(i).getName() << " cena: " << this->reciptItemList.at(i).getPrice() << "\n";
-        }
-        cout << "koniec paragonu";
-    }
-};
-//--- end Recipt section ------
 
 
 
@@ -321,38 +368,8 @@ public:
 
         if (selectedProductType == 1) //Ice cream path
         {
-            cout << "wybrales typ: lody\n";
-            // -- cup type select --
-
-            int selectedCupIndex = iceCreamControler.cupTypeSelect();
-            int maxAmountofScoopsPerCup = IceCream::getMaxScoopsAmountFromCupList(selectedCupIndex);
-
-            // -- scoops amounts select --
-            int inputedscoopsAmount;
-            bool inputedScoopsAmountIsError = true;
-            do
-            {
-                cout << "ile galek lodow chcesz?\n";
-                cin >> inputedscoopsAmount;
-                if (inputedscoopsAmount <= maxAmountofScoopsPerCup)
-                {
-                    inputedScoopsAmountIsError = false;
-                }
-                else
-                {
-                    cout << "podano zla ilosc galek lodow\n";
-                }
-            } while (inputedScoopsAmountIsError);
-            
-            // -- scoops tastes select --
-            vector <VectorIndex> selectedScoopsIndexes = iceCreamControler.scoopsSelectMenu(inputedscoopsAmount);
-            for (int i = 0; i < selectedScoopsIndexes.size(); i++)
-            {
-                VectorIndex selectedIndex = selectedScoopsIndexes.at(i);
-                double selectScoopPrice = iceCreamControler.getElementFormIceCreamList(selectedIndex).getPrice();
-                string selectScoopName = iceCreamControler.getElementFormIceCreamList(selectedIndex).getName();
-                this->machineReceipt.addItemToReceipt(ReciptItem(selectScoopPrice, selectScoopName));
-            }
+            Receipt receiptGeneratedByIceCreamMenu = iceCreamControler.menuControler();
+            machineReceipt.addReceiptToEachOther(receiptGeneratedByIceCreamMenu);
         }
         else if (selectedProductType == 2) //Cake path
         {
