@@ -163,7 +163,7 @@ public:
         return this->name;
     }
 };
-int IceCreamCategory::IDGenrator = 0;
+int IceCreamCategory::IDGenrator = 1;
 
 class IceCreamCupType : public DessertAddon
 {
@@ -192,7 +192,7 @@ public:
     IceCream(string name, double price)
         : Dessert(name, price)
     {
-        this->categoryID = -1;
+        this->categoryID = 0; // 0 means that icecream does not have category
     }
 
     IceCream(string name, double price, int categoryID)
@@ -200,7 +200,18 @@ public:
     {
     }
 
-    static int addNewIceCreamCategory(IceCreamCategory newIceCreamCategory)
+    int getCategoryID()
+    {
+        return this->categoryID;
+    }
+
+    static int getCategoryIDByIndex(int categoryIndex)
+    {
+        return availableCategoryList.at(categoryIndex).getCategoryID();
+    }
+
+    static int
+    addNewIceCreamCategory(IceCreamCategory newIceCreamCategory)
     {
         availableCategoryList.push_back(newIceCreamCategory);
         return newIceCreamCategory.getCategoryID();
@@ -297,18 +308,25 @@ private:
             return inputedScoopsAmount;
         }
 
-        void printIceCreamListSelect(vector<IceCream> &iceCreamList, int categoryIndex = -2)
+        void printIceCreamListSelect(vector<IceCream> &iceCreamList, int categoryID = -1)
         {
             for (int i = 0; i < iceCreamList.size(); i++)
             {
-                cout << i + 1 << " - " << iceCreamList.at(i).getName() << "\n";
+                if (categoryID != -1 && iceCreamList.at(i).getCategoryID() == categoryID)
+                {
+                    cout << i + 1 << " - " << iceCreamList.at(i).getName() << "\n";
+                }
+                else
+                {
+                    cout << i + 1 << " - " << iceCreamList.at(i).getName() << "\n";
+                }
             }
         }
 
         void iceCreamTasteSelect(vector<IceCream> &iceCreamList, int selectedScoopsAmount, Receipt &iceCreamReceipt)
         {
             int selectedIndex;
-            int categorySelect;
+            int categorySelectedIndex;
             int iceCreamListSize = iceCreamList.size();
             for (int i = 0; i < selectedScoopsAmount; i++)
             {
@@ -318,10 +336,18 @@ private:
                 cin >> selectedIndex;
                 selectedIndex--;
 
-                if (selectedIndex == iceCreamListSize)
+                //TODO: popracowac na rozwiazaniem z indexem przy kategorii
+                // 1. usuac bez kategori konstruktor
+                // 2. zminic numeracji ID na index
+                // 3. zmienic architekture
+
+                if (selectedIndex == iceCreamListSize) // if user select print by category
                 {
                     IceCream::printIceCreamCategory();
-                    cin >> categorySelect;
+                    cin >> categorySelectedIndex;
+                    categorySelectedIndex--;
+                    int categoryID = IceCream::getCategoryIDByIndex(categorySelectedIndex);
+                    printIceCreamListSelect(iceCreamList, categoryID);
                 }
 
                 // -- add selected item to receipt
