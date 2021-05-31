@@ -1,0 +1,90 @@
+{
+  "todo": [
+    {
+      "assignedTo": {
+        "name": "Dawid Matras"
+      },
+      "creation_time": "2021-05-31T07:41:02.350Z",
+      "id": "4",
+      "references": [],
+      "title": "dopisac pozostale funckcjonanosci w frontend core"
+    },
+    {
+      "assignedTo": {
+        "name": "Dawid Matras"
+      },
+      "creation_time": "2021-05-31T07:40:07.946Z",
+      "id": "1",
+      "references": [],
+      "title": "front-end core"
+    },
+    {
+      "assignedTo": {
+        "name": "Dawid Matras"
+      },
+      "creation_time": "2021-05-31T07:40:21.091Z",
+      "id": "2",
+      "references": [],
+      "title": "zabezpieczyc menu przez zlym wyborem"
+    },
+    {
+      "assignedTo": {
+        "name": "Dawid Matras"
+      },
+      "creation_time": "2021-05-31T07:42:32.524Z",
+      "id": "6",
+      "references": [],
+      "title": "zrobic mozliwosc ponownego wyboru np zeby mona bylo kupic 2 lody i 3 kaw"
+    },
+    {
+      "assignedTo": {
+        "name": "Dawid Matras"
+      },
+      "creation_time": "2021-05-31T07:41:19.282Z",
+      "id": "5",
+      "references": [],
+      "title": "zrobic segregace lodow po typie np. bez laktozy, bez glutenu,"
+    },
+    {
+      "assignedTo": {
+        "name": "Dawid Matras"
+      },
+      "creation_time": "2021-05-31T11:14:18.063Z",
+      "id": "9",
+      "references": [],
+      "title": "zrobić sumowanie kwoty w paragonie"
+    }
+  ],
+  "in-progress": [
+    {
+      "assignedTo": {
+        "name": "Dawid Matras"
+      },
+      "creation_time": "2021-05-31T11:13:21.134Z",
+      "id": "8",
+      "references": [],
+      "title": "sort ice crem by category"
+    }
+  ],
+  "testing": [],
+  "done": [
+    {
+      "assignedTo": {
+        "name": "Dawid Matras"
+      },
+      "creation_time": "2021-05-31T07:42:48.412Z",
+      "id": "7",
+      "references": [],
+      "title": "funckje setup przerzuc do klasy machine"
+    },
+    {
+      "assignedTo": {
+        "name": "Dawid Matras"
+      },
+      "creation_time": "2021-05-31T07:40:41.650Z",
+      "id": "3",
+      "references": [],
+      "title": "zrobic klase paragon"
+    }
+  ]
+}
