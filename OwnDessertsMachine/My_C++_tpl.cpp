@@ -4,6 +4,7 @@
 using namespace std;
 
 typedef int VectorIndex;
+
 void PRINT_DEV(string msg)
 {
     bool is_print = true;
@@ -210,8 +211,7 @@ public:
         return availableCategoryList.at(categoryIndex).getCategoryID();
     }
 
-    static int
-    addNewIceCreamCategory(IceCreamCategory newIceCreamCategory)
+    static int addNewIceCreamCategory(IceCreamCategory newIceCreamCategory)
     {
         availableCategoryList.push_back(newIceCreamCategory);
         return newIceCreamCategory.getCategoryID();
@@ -535,3 +535,21 @@ int main()
     machine1.frontEndCore();
     system("PAUSE");
 }
+
+//TODO
+/*
+1. paragon podsumowanie + wprowadzenie kwoty przez usera + wydanie reszty + validacja 
+2. dorobić obsługę kategorii w lodach
+3. menu dla coffee 
+4. menu dla cake
+5. validacja 
+6. lody z alkoholem
+7. możliwość wyboru i lodow i ciastek np kupić 2 loady i 3 ciasta
+8. system do wydawnaie reszty  monet
+
+
+TODO Szymon
+1. menu dla coffee 
+2. menu dla cake
+
+*/
