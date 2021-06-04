@@ -638,7 +638,6 @@ public:
     {
     }
 
-  
     void addCakeToList(Cake newCake)
     {
         this->cakeList.push_back(newCake);
