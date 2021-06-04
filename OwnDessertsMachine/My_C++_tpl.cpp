@@ -124,16 +124,6 @@ public:
     }
 };
 
-class Coffee : public Dessert
-{
-private:
-public:
-    Coffee(string name, double price)
-        : Dessert(name, price)
-    {
-    }
-};
-
 //-----------------------------------------
 //-------- start ice cream section -------
 class IceCreamCategory
@@ -190,8 +180,8 @@ private:
     int categoryIndex;
 
 public:
-    IceCream(string name, double price, int categoryID)
-        : Dessert(name, price), categoryIndex(categoryID)
+    IceCream(string name, double price, int categoryIndex)
+        : Dessert(name, price), categoryIndex(categoryIndex)
     {
     }
 
@@ -273,13 +263,6 @@ public:
         return this->backendListIndex;
     }
 };
-
-// class MenuSelectItemFrontendBackendConnectorController
-// {
-//     MenuSelectItemFrontendBackendConnectorController()
-//     {
-//         }
-// }
 
 class IceCreamController
 {
@@ -395,8 +378,7 @@ private:
         }
     };
 
-    vector<IceCream>
-        iceCreamList;
+    vector<IceCream> iceCreamList;
     MenuControllerTools menuControllerTools;
 
 public:
@@ -435,10 +417,216 @@ public:
 //-------- end ice cream section -------
 //-----------------------------------------
 
+//-----------------------------------------
+//-------- start coffee section -------
+class CoffeeCategory
+{
+private:
+    string name;
+    int ID;
+    static int IDGenrator;
+
+public:
+    CoffeeCategory()
+    {
+        this->ID = IDGenrator;
+        IDGenrator++;
+    }
+    CoffeeCategory(string name)
+        : name(name)
+    {
+        this->ID = IDGenrator;
+        IDGenrator++;
+    }
+    int getCategoryID()
+    {
+        return this->ID;
+    }
+    string getCategoryName()
+    {
+        return this->name;
+    }
+};
+int CoffeeCategory::IDGenrator = 0;
+
+class Coffee : public Dessert
+{
+private:
+    static vector<CoffeeCategory> availableCategoryList;
+    int categoryID;
+
+public:
+    Coffee(string name, double price, int categoryID)
+        : Dessert(name, price), categoryID(categoryID)
+    {
+    }
+
+    int getCategoryID()
+    {
+        return this->categoryID;
+    }
+
+    static int getCategoryIDByIndex(int categoryIndex)
+    {
+        return availableCategoryList.at(categoryIndex).getCategoryID();
+    }
+
+    static int addNewCoffeeCategory(CoffeeCategory newCoffeeCategory)
+    {
+        availableCategoryList.push_back(newCoffeeCategory);
+        return newCoffeeCategory.getCategoryID();
+    }
+
+    static void printCoffeeCategory()
+    {
+        int availableCategoryListSize = availableCategoryList.size();
+        cout << "dostepne kategorie Kawy:\n";
+        for (int i = 0; i < availableCategoryListSize; i++)
+        {
+            cout << i + 1 << " - " << availableCategoryList.at(i).getCategoryName() << "\n";
+        }
+        cout << availableCategoryListSize + 1 << " - bez kategorii\n";
+    }
+};
+vector<CoffeeCategory> Coffee::availableCategoryList;
+
+class CoffeeController
+{
+private:
+    class MenuControllerTools
+    {
+    public:
+        MenuControllerTools()
+        {
+        }
+        const double isTakeAway()
+        {
+            char selectedOption;
+            cout << "1 - Na wynos\n"
+                 << "Dowolna wartosc - Na miejscu\n";
+            cin >> selectedOption;
+            if (selectedOption == '1')
+            {
+                cout << "\n-------\nWybrany deser zostanie zapakowany w opakowanie.\n";
+                return 1.50;
+            }
+            return 0;
+        }
+        const double isWithMilk()
+        {
+            char selectedOption;
+            cout << "1 - Z mlekiem\n"
+                 << "Dowolna wartosc - Bez mleka\n";
+            cin >> selectedOption;
+            if (selectedOption == 1)
+            {
+                cout << "\n-------\nDodaje mleko.\n";
+                return 1.20;
+            }
+            return 0;
+        }
+        void takeAwaySelect(Receipt &coffeeReceipt)
+        {
+            //Coffee::printAvaiableCupList();
+            coffeeReceipt.addItemToReceipt(ReciptItem(isTakeAway(), "Opakowanie"));
+        }
+        void milkSelect(Receipt &coffeeReceipt)
+        {
+            //Coffee::printAvaiableCupList();
+            coffeeReceipt.addItemToReceipt(ReciptItem(isWithMilk(), "Mleko"));
+        }
+        void printCoffeeListSelect(vector<Coffee> &coffeeList, int categoryID = 0)
+        {
+            for (int i = 0; i < coffeeList.size(); i++)
+            {
+                if (categoryID != 0 && coffeeList.at(i).getCategoryID() == categoryID)
+                {
+                    cout << i + 1 << " - " << coffeeList.at(i).getName() << "\n";
+                }
+                else
+                {
+                    cout << i + 1 << " - " << coffeeList.at(i).getName() << "\n";
+                }
+            }
+        }
+
+        void coffeeTypeSelect(vector<Coffee> &coffeeList, Receipt &coffeeReceipt)
+        {
+            int selectedIndex;
+            int categorySelectedIndex;
+            int coffeeListSize = coffeeList.size();
+            cout << "Czy chcesz wziac kawe na wynos?\n";
+            takeAwaySelect(coffeeReceipt);
+            cout << "Wybierz typ kawy: "
+                 << "\n";
+            printCoffeeListSelect(coffeeList);
+            cout << coffeeListSize + 1 << " - posortuj po kategorii\n";
+            cin >> selectedIndex;
+            selectedIndex--;
+
+            //TODO: popracowac na rozwiazaniem z indexem przy kategorii
+            // 1. usuac bez kategori konstruktor
+            // 2. zminic numeracji ID na index
+            // 3. zmienic architekture
+
+            if (selectedIndex == coffeeListSize) // if user select print by category
+            {
+                Coffee::printCoffeeCategory();
+                cin >> categorySelectedIndex;
+                categorySelectedIndex--;
+                int categoryID = Coffee::getCategoryIDByIndex(categorySelectedIndex);
+                printCoffeeListSelect(coffeeList, categoryID);
+            }
+            cout << "Czy chcesz dodac mleko?\n";
+            milkSelect(coffeeReceipt);
+            // -- add selected item to receipt
+            double selectCoffeePrice = coffeeList.at(selectedIndex).getPrice();
+            string selectCoffeeName = coffeeList.at(selectedIndex).getName();
+            coffeeReceipt.addItemToReceipt(ReciptItem(selectCoffeePrice, selectCoffeeName));
+        }
+    };
+
+    vector<Coffee> coffeeList;
+    MenuControllerTools menuControllerTools;
+
+public:
+    CoffeeController()
+    {
+    }
+    void addCoffeeToList(Coffee newCoffee)
+    {
+        this->coffeeList.push_back(newCoffee);
+    }
+
+    Coffee getElementFromCoffeeList(int index)
+    {
+        return this->coffeeList.at(index);
+    }
+
+    Receipt menuControler()
+    {
+        Receipt coffeeReceipt;
+        // -- user select info --
+        cout << "wybrales typ: Kawa\n";
+        // -- cup type select --
+        //int selectedCupIndex = menuControllerTools.coffeeTypeSelect(coffeeReceipt);
+        //int maxAmountofScoopsPerCup = IceCream::getMaxScoopsAmountFromCupList(selectedCupIndex);
+
+        // -- scoops amounts select --
+        //int selectedScoopsAmount = menuControllerTools.scoopsAmountSelect(maxAmountofScoopsPerCup);
+
+        // -- scoops tastes select --
+        menuControllerTools.coffeeTypeSelect(this->coffeeList, coffeeReceipt);
+        return coffeeReceipt;
+    }
+};
+//-------- end coffee section -------
+//-----------------------------------------
+
 class DessertsMachine
 {
 private:
-    vector<Coffee> coffeeList;
+    CoffeeController coffeeController;
     vector<Cake> cakeList;
     IceCreamController iceCreamController;
     Receipt machineReceipt;
@@ -450,41 +638,10 @@ public:
     {
     }
 
-    void addCoffeeToList(Coffee newCoffee)
-    {
-        this->coffeeList.push_back(newCoffee);
-    }
+  
     void addCakeToList(Cake newCake)
     {
         this->cakeList.push_back(newCake);
-    }
-
-    int coffeeMenu()
-    {
-        int coffeeSelect;
-        for (int i = 0; i < this->coffeeList.size(); i++)
-        {
-            cout << i + 1 << " - " << this->coffeeList.at(i).getName();
-        }
-        cin >> coffeeSelect;
-        coffeeSelect--;
-        return coffeeSelect;
-    }
-
-    bool askIsMilk()
-    {
-        string select;
-        cout << "czy chcesz mleko do kawy?\nT-tak, N-nie\n";
-        cin >> select;
-        if (select == "T" || select == "t")
-        {
-            return true;
-        }
-        if (select == "N" || select == "n")
-        {
-            return false;
-        }
-        return false;
     }
 
     void frontEndCore()
@@ -508,17 +665,8 @@ public:
         }
         else if (selectedProductType == 3) //Coffee path
         {
-            cout << "wybrales typ: kawa\n";
-            int coffeeSelect = coffeeMenu();
-            double selectCoffeePrice = this->coffeeList.at(coffeeSelect).getPrice();
-            string selectCoffeeName = this->coffeeList.at(coffeeSelect).getName();
-            int isMilk = askIsMilk();
-            if (isMilk)
-            {
-                selectCoffeePrice += 1;
-            }
-
-            this->machineReceipt.addItemToReceipt(ReciptItem(selectCoffeePrice, selectCoffeeName));
+            Receipt receiptGeneratedByCoffeeMenu = coffeeController.menuControler();
+            machineReceipt.addReceiptToEachOther(receiptGeneratedByCoffeeMenu);
         }
         this->machineReceipt.generateRecipt();
     }
@@ -527,8 +675,28 @@ public:
     {
         //1. Budujemy Cake1 .. n
 
-        this->addCoffeeToList(Coffee("coffee1", 11234));
-        this->addCoffeeToList(Coffee("coffee3", 22344323543654));
+        //----------------------------------------------
+        //------ start build coffee -----------
+        //IceCream::addNewCupType(IceCreamCupType("slodki rozek", 1.5, 4));
+        //IceCream::addNewCupType(IceCreamCupType("zwykly", 0.5, 2));
+        //IceCream::addNewCupType(IceCreamCupType("zwykly-duzy", 1.1, 3));
+        int coffeeCategory1 = Coffee::addNewCoffeeCategory(CoffeeCategory("Bez kofeiny"));
+        int coffeeCategory2 = Coffee::addNewCoffeeCategory(CoffeeCategory("Z kofeiną"));
+        int coffeeCategory3 = Coffee::addNewCoffeeCategory(CoffeeCategory("Bez cukru"));
+
+        coffeeController.addCoffeeToList(Coffee("Latte bez kofeiny", 44, coffeeCategory1));
+        coffeeController.addCoffeeToList(Coffee("Kawa czarna bez kofeiny", 45, coffeeCategory1));
+        coffeeController.addCoffeeToList(Coffee("Latte Machiato bez kofeiny", 46, coffeeCategory1));
+
+        coffeeController.addCoffeeToList(Coffee("Latte", 55, coffeeCategory2));
+        coffeeController.addCoffeeToList(Coffee("Espresso", 56, coffeeCategory2));
+        coffeeController.addCoffeeToList(Coffee("Latte Machiato", 57, coffeeCategory2));
+
+        coffeeController.addCoffeeToList(Coffee("Latte bez cukru", 50, coffeeCategory3));
+        coffeeController.addCoffeeToList(Coffee("Espresso bez cukru", 51, coffeeCategory3));
+        coffeeController.addCoffeeToList(Coffee("Latte Machiato bez cukru", 52, coffeeCategory3));
+        //------ end build coffee -----------
+        //----------------------------------------------
 
         /*this->addShakeToList(Shake("shake1",11));
         this->addShakeToList(Shake("shake2", 22));
