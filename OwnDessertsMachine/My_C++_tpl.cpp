@@ -141,19 +141,19 @@ class IceCreamCategory
 private:
     string name;
     int ID;
-    static int IDGenrator;
+    static int categoryIndexGenrator;
 
 public:
     IceCreamCategory()
     {
-        this->ID = IDGenrator;
-        IDGenrator++;
+        this->ID = categoryIndexGenrator;
+        categoryIndexGenrator++;
     }
     IceCreamCategory(string name)
         : name(name)
     {
-        this->ID = IDGenrator;
-        IDGenrator++;
+        this->ID = categoryIndexGenrator;
+        categoryIndexGenrator++;
     }
     int getCategoryID()
     {
@@ -164,7 +164,7 @@ public:
         return this->name;
     }
 };
-int IceCreamCategory::IDGenrator = 1;
+int IceCreamCategory::categoryIndexGenrator = 0;
 
 class IceCreamCupType : public DessertAddon
 {
@@ -187,28 +187,17 @@ class IceCream : public Dessert
 private:
     static vector<IceCreamCupType> iceCreamCupTypeList;
     static vector<IceCreamCategory> availableCategoryList;
-    int categoryID;
+    int categoryIndex;
 
 public:
-    IceCream(string name, double price)
-        : Dessert(name, price)
-    {
-        this->categoryID = 0; // 0 means that icecream does not have category
-    }
-
     IceCream(string name, double price, int categoryID)
-        : Dessert(name, price), categoryID(categoryID)
+        : Dessert(name, price), categoryIndex(categoryID)
     {
     }
 
-    int getCategoryID()
+    int getCategoryIndex()
     {
-        return this->categoryID;
-    }
-
-    static int getCategoryIDByIndex(int categoryIndex)
-    {
-        return availableCategoryList.at(categoryIndex).getCategoryID();
+        return this->categoryIndex;
     }
 
     static int addNewIceCreamCategory(IceCreamCategory newIceCreamCategory)
@@ -225,7 +214,6 @@ public:
         {
             cout << i + 1 << " - " << availableCategoryList.at(i).getCategoryName() << "\n";
         }
-        cout << availableCategoryListSize + 1 << " - bez kategorii\n";
     }
 
     static void addNewCupType(IceCreamCupType newType)
@@ -263,6 +251,35 @@ public:
 };
 vector<IceCreamCupType> IceCream::iceCreamCupTypeList;
 vector<IceCreamCategory> IceCream::availableCategoryList;
+
+class MenuSelectItemFrontendBackendConnector
+{
+private:
+    int frontendListNumber;
+    int backendListIndex;
+
+public:
+    MenuSelectItemFrontendBackendConnector() {}
+    MenuSelectItemFrontendBackendConnector(int frontendListNumber, int backendListIndex)
+        : frontendListNumber(frontendListNumber), backendListIndex(backendListIndex)
+    {
+    }
+    int getFrontendListNumber()
+    {
+        return this->frontendListNumber;
+    }
+    int getBackendListIndex()
+    {
+        return this->backendListIndex;
+    }
+};
+
+// class MenuSelectItemFrontendBackendConnectorController
+// {
+//     MenuSelectItemFrontendBackendConnectorController()
+//     {
+//         }
+// }
 
 class IceCreamController
 {
@@ -308,19 +325,36 @@ private:
             return inputedScoopsAmount;
         }
 
-        void printIceCreamListSelect(vector<IceCream> &iceCreamList, int categoryID = -1)
+        void printIceCreamListSelect(vector<IceCream> &iceCreamList)
         {
             for (int i = 0; i < iceCreamList.size(); i++)
             {
-                if (categoryID != -1 && iceCreamList.at(i).getCategoryID() == categoryID)
+                cout << i + 1 << " - " << iceCreamList.at(i).getName() << "\n";
+            }
+        }
+
+        vector<MenuSelectItemFrontendBackendConnector> printIceCreamListSelectByCategory(vector<IceCream> &iceCreamList, int categoryIndex = -1)
+        {
+            vector<MenuSelectItemFrontendBackendConnector> listToReturn;
+            if (categoryIndex == -1)
+            {
+                return listToReturn;
+            }
+            int counter = 1;
+            for (int i = 0; i < iceCreamList.size(); i++)
+            {
+                if (iceCreamList.at(i).getCategoryIndex() == categoryIndex)
                 {
-                    cout << i + 1 << " - " << iceCreamList.at(i).getName() << "\n";
+                    cout << counter << " - " << iceCreamList.at(i).getName() << "\n";
+                    listToReturn.push_back(MenuSelectItemFrontendBackendConnector(counter, i));
+                    counter++;
                 }
                 else
                 {
-                    cout << i + 1 << " - " << iceCreamList.at(i).getName() << "\n";
+                    continue;
                 }
             }
+            return listToReturn;
         }
 
         void iceCreamTasteSelect(vector<IceCream> &iceCreamList, int selectedScoopsAmount, Receipt &iceCreamReceipt)
@@ -328,6 +362,7 @@ private:
             int selectedIndex;
             int categorySelectedIndex;
             int iceCreamListSize = iceCreamList.size();
+            int sortByCategorySelectIndex = iceCreamListSize;
             for (int i = 0; i < selectedScoopsAmount; i++)
             {
                 cout << "wybierz smak: " << i + 1 << "\n";
@@ -337,17 +372,19 @@ private:
                 selectedIndex--;
 
                 //TODO: popracowac na rozwiazaniem z indexem przy kategorii
-                // 1. usuac bez kategori konstruktor
-                // 2. zminic numeracji ID na index
-                // 3. zmienic architekture
+                // 1. zmienic architekture
 
-                if (selectedIndex == iceCreamListSize) // if user select print by category
+                if (selectedIndex == sortByCategorySelectIndex) // if user select print by category
                 {
                     IceCream::printIceCreamCategory();
                     cin >> categorySelectedIndex;
                     categorySelectedIndex--;
-                    int categoryID = IceCream::getCategoryIDByIndex(categorySelectedIndex);
-                    printIceCreamListSelect(iceCreamList, categoryID);
+                    vector<MenuSelectItemFrontendBackendConnector> frontendBackendConnectionsList =
+                        printIceCreamListSelectByCategory(iceCreamList, categorySelectedIndex);
+                    cin >> selectedIndex;
+                    auto backendIndexElement = find_if(frontendBackendConnectionsList.begin(), frontendBackendConnectionsList.end(), [selectedIndex](MenuSelectItemFrontendBackendConnector &obj)
+                                                       { return obj.getFrontendListNumber() == selectedIndex; });
+                    selectedIndex = (*backendIndexElement).getBackendListIndex();
                 }
 
                 // -- add selected item to receipt
@@ -358,7 +395,8 @@ private:
         }
     };
 
-    vector<IceCream> iceCreamList;
+    vector<IceCream>
+        iceCreamList;
     MenuControllerTools menuControllerTools;
 
 public:
@@ -509,7 +547,7 @@ public:
 
         int iceCreamCategory1 = IceCream::addNewIceCreamCategory(IceCreamCategory("Bez laktozy"));
         int iceCreamCategory2 = IceCream::addNewIceCreamCategory(IceCreamCategory("Bez glutenu"));
-        int iceCreamCategory3 = IceCream::addNewIceCreamCategory(IceCreamCategory("Bez cukru"));
+        int iceCreamCategory3 = IceCream::addNewIceCreamCategory(IceCreamCategory("inne"));
 
         iceCreamController.addIceCreamToList(IceCream("smak1 bez laktozy", 44, iceCreamCategory1));
         iceCreamController.addIceCreamToList(IceCream("smak2 bez laktozy", 45, iceCreamCategory1));
@@ -519,9 +557,9 @@ public:
         iceCreamController.addIceCreamToList(IceCream("smak22 bez glutenu", 56, iceCreamCategory2));
         iceCreamController.addIceCreamToList(IceCream("smak23 bez glutenu", 57, iceCreamCategory2));
 
-        iceCreamController.addIceCreamToList(IceCream("smak31", 66));
-        iceCreamController.addIceCreamToList(IceCream("smak32", 67));
-        iceCreamController.addIceCreamToList(IceCream("smak33", 68));
+        iceCreamController.addIceCreamToList(IceCream("smak31", 66, iceCreamCategory3));
+        iceCreamController.addIceCreamToList(IceCream("smak32", 67, iceCreamCategory3));
+        iceCreamController.addIceCreamToList(IceCream("smak33", 68, iceCreamCategory3));
 
         //------ end build ice cream -----------
         //----------------------------------------------

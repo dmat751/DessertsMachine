@@ -53,6 +53,15 @@
       "id": "9",
       "references": [],
       "title": "zrobić sumowanie kwoty w paragonie"
+    },
+    {
+      "assignedTo": {
+        "name": "Dawid Matras"
+      },
+      "creation_time": "2021-06-04T10:03:03.827Z",
+      "id": "10",
+      "references": [],
+      "title": "przerobić funckje drukujące"
     }
   ],
   "in-progress": [
