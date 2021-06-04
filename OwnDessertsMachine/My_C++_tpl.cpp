@@ -130,24 +130,24 @@ class IceCreamCategory
 {
 private:
     string name;
-    int ID;
+    int categoryIndex;
     static int categoryIndexGenrator;
 
 public:
     IceCreamCategory()
     {
-        this->ID = categoryIndexGenrator;
+        this->categoryIndex = categoryIndexGenrator;
         categoryIndexGenrator++;
     }
     IceCreamCategory(string name)
         : name(name)
     {
-        this->ID = categoryIndexGenrator;
+        this->categoryIndex = categoryIndexGenrator;
         categoryIndexGenrator++;
     }
     int getCategoryID()
     {
-        return this->ID;
+        return this->categoryIndex;
     }
     string getCategoryName()
     {
@@ -340,12 +340,12 @@ private:
             return listToReturn;
         }
 
-        void iceCreamTasteSelect(vector<IceCream> &iceCreamList, int selectedScoopsAmount, Receipt &iceCreamReceipt)
+        void iceCreamTypeSelect(vector<IceCream> &iceCreamList, int selectedScoopsAmount, Receipt &iceCreamReceipt)
         {
             int selectedIndex;
             int categorySelectedIndex;
             int iceCreamListSize = iceCreamList.size();
-            int sortByCategorySelectIndex = iceCreamListSize;
+            int sortByCategoryOptionIndex = iceCreamListSize;
             for (int i = 0; i < selectedScoopsAmount; i++)
             {
                 cout << "wybierz smak: " << i + 1 << "\n";
@@ -354,10 +354,7 @@ private:
                 cin >> selectedIndex;
                 selectedIndex--;
 
-                //TODO: popracowac na rozwiazaniem z indexem przy kategorii
-                // 1. zmienic architekture
-
-                if (selectedIndex == sortByCategorySelectIndex) // if user select print by category
+                if (selectedIndex == sortByCategoryOptionIndex) // if user select print by category
                 {
                     IceCream::printIceCreamCategory();
                     cin >> categorySelectedIndex;
@@ -409,7 +406,7 @@ public:
         int selectedScoopsAmount = menuControllerTools.scoopsAmountSelect(maxAmountofScoopsPerCup);
 
         // -- scoops tastes select --
-        menuControllerTools.iceCreamTasteSelect(this->iceCreamList, selectedScoopsAmount, iceCreamReceipt);
+        menuControllerTools.iceCreamTypeSelect(this->iceCreamList, selectedScoopsAmount, iceCreamReceipt);
 
         return iceCreamReceipt;
     }
@@ -423,52 +420,47 @@ class CoffeeCategory
 {
 private:
     string name;
-    int ID;
-    static int IDGenrator;
+    int categoryIndex;
+    static int categoryIndexGenrator;
 
 public:
     CoffeeCategory()
     {
-        this->ID = IDGenrator;
-        IDGenrator++;
+        this->categoryIndex = categoryIndexGenrator;
+        categoryIndexGenrator++;
     }
     CoffeeCategory(string name)
         : name(name)
     {
-        this->ID = IDGenrator;
-        IDGenrator++;
+        this->categoryIndex = categoryIndexGenrator;
+        categoryIndexGenrator++;
     }
     int getCategoryID()
     {
-        return this->ID;
+        return this->categoryIndex;
     }
     string getCategoryName()
     {
         return this->name;
     }
 };
-int CoffeeCategory::IDGenrator = 0;
+int CoffeeCategory::categoryIndexGenrator = 0;
 
 class Coffee : public Dessert
 {
 private:
     static vector<CoffeeCategory> availableCategoryList;
-    int categoryID;
+    int categoryIndex;
 
 public:
     Coffee(string name, double price, int categoryID)
-        : Dessert(name, price), categoryID(categoryID)
+        : Dessert(name, price), categoryIndex(categoryID)
     {
     }
 
-    int getCategoryID()
+    int getCategoryIndex()
     {
-        return this->categoryID;
-    }
-
-    static int getCategoryIDByIndex(int categoryIndex)
-    {
-        return availableCategoryList.at(categoryIndex).getCategoryID();
+        return this->categoryIndex;
     }
 
     static int addNewCoffeeCategory(CoffeeCategory newCoffeeCategory)
@@ -535,19 +527,38 @@ private:
             //Coffee::printAvaiableCupList();
             coffeeReceipt.addItemToReceipt(ReciptItem(isWithMilk(), "Mleko"));
         }
-        void printCoffeeListSelect(vector<Coffee> &coffeeList, int categoryID = 0)
+
+        void printCoffeeListSelect(vector<Coffee> &coffeeList)
         {
+
             for (int i = 0; i < coffeeList.size(); i++)
             {
-                if (categoryID != 0 && coffeeList.at(i).getCategoryID() == categoryID)
+                cout << i + 1 << " - " << coffeeList.at(i).getName() << "\n";
+            }
+        }
+
+        vector<MenuSelectItemFrontendBackendConnector> printCoffeeSelectByCategory(vector<Coffee> &coffeeList, int categoryIndex = -1)
+        {
+            vector<MenuSelectItemFrontendBackendConnector> listToReturn;
+            if (categoryIndex == -1)
+            {
+                return listToReturn;
+            }
+            int counter = 1;
+            for (int i = 0; i < coffeeList.size(); i++)
+            {
+                if (coffeeList.at(i).getCategoryIndex() == categoryIndex)
                 {
-                    cout << i + 1 << " - " << coffeeList.at(i).getName() << "\n";
+                    cout << counter << " - " << coffeeList.at(i).getName() << "\n";
+                    listToReturn.push_back(MenuSelectItemFrontendBackendConnector(counter, i));
+                    counter++;
                 }
                 else
                 {
-                    cout << i + 1 << " - " << coffeeList.at(i).getName() << "\n";
+                    continue;
                 }
             }
+            return listToReturn;
         }
 
         void coffeeTypeSelect(vector<Coffee> &coffeeList, Receipt &coffeeReceipt)
@@ -555,6 +566,7 @@ private:
             int selectedIndex;
             int categorySelectedIndex;
             int coffeeListSize = coffeeList.size();
+            int sortByCategoryOptionIndex = coffeeListSize;
             cout << "Czy chcesz wziac kawe na wynos?\n";
             takeAwaySelect(coffeeReceipt);
             cout << "Wybierz typ kawy: "
@@ -564,25 +576,25 @@ private:
             cin >> selectedIndex;
             selectedIndex--;
 
-            //TODO: popracowac na rozwiazaniem z indexem przy kategorii
-            // 1. usuac bez kategori konstruktor
-            // 2. zminic numeracji ID na index
-            // 3. zmienic architekture
-
-            if (selectedIndex == coffeeListSize) // if user select print by category
+            if (selectedIndex == sortByCategoryOptionIndex) // if user select print by category
             {
                 Coffee::printCoffeeCategory();
                 cin >> categorySelectedIndex;
                 categorySelectedIndex--;
-                int categoryID = Coffee::getCategoryIDByIndex(categorySelectedIndex);
-                printCoffeeListSelect(coffeeList, categoryID);
+                vector<MenuSelectItemFrontendBackendConnector> frontendBackendConnectionsList =
+                    printCoffeeSelectByCategory(coffeeList, categorySelectedIndex);
+                cin >> selectedIndex;
+                auto backendIndexElement = find_if(frontendBackendConnectionsList.begin(), frontendBackendConnectionsList.end(), [selectedIndex](MenuSelectItemFrontendBackendConnector &obj)
+                                                   { return obj.getFrontendListNumber() == selectedIndex; });
+                selectedIndex = (*backendIndexElement).getBackendListIndex();
             }
-            cout << "Czy chcesz dodac mleko?\n";
-            milkSelect(coffeeReceipt);
             // -- add selected item to receipt
             double selectCoffeePrice = coffeeList.at(selectedIndex).getPrice();
             string selectCoffeeName = coffeeList.at(selectedIndex).getName();
             coffeeReceipt.addItemToReceipt(ReciptItem(selectCoffeePrice, selectCoffeeName));
+
+            cout << "Czy chcesz dodac mleko?\n";
+            milkSelect(coffeeReceipt);
         }
     };
 
@@ -754,7 +766,8 @@ int main()
 
 
 TODO Szymon
-1. menu dla coffee 
+//1. menu dla coffee -> done
 2. menu dla cake
+3. isWithMilk() linie okolo 500 przeniszc cena mleka do setupu
 
 */
