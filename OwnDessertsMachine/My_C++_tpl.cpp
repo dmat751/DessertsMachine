@@ -340,7 +340,7 @@ public:
     static void printIceCreamCategory()
     {
         int availableCategoryListSize = availableCategoryList.size();
-        cout << "dostepne kategorie lodow:\n";
+        cout << "Dostepne rodzaje lodow:\n";
         for (int i = 0; i < availableCategoryListSize; i++)
         {
             cout << i + 1 << " - " << availableCategoryList.at(i).getCategoryName() << "\n";
@@ -376,7 +376,7 @@ public:
             string name = iceCreamCupTypeList.at(i).getAddonName();
             double price = iceCreamCupTypeList.at(i).getAddonPrice();
             int maxScoops = iceCreamCupTypeList.at(i).getMaxScoops();
-            cout << (i + 1) << " - " << name << " cena: " << price << " max galek: " << maxScoops << "\n";
+            cout << (i + 1) << " - " << name << " (cena: " << price << " ,max galek: " << maxScoops << ")\n";
         }
     }
 };
@@ -394,8 +394,9 @@ private:
         }
         int cupTypeSelect(Receipt &iceCreamReceipt)
         {
+            cout << "\nWybierz typ kubka\n";
             IceCream::printAvaiableCupList();
-            cout << "podaj numer: ";
+            cout << "Wpisz odpowiedni numer: ";
             int select;
             cin >> select;
             select--;
@@ -412,7 +413,7 @@ private:
             bool inputedScoopsAmountIsError = true;
             do
             {
-                cout << "ile galek lodow chcesz?\n";
+                cout << "Ile chcesz galek lodow ?\n";
                 cin >> inputedScoopsAmount;
                 if (inputedScoopsAmount <= maxAmountOfScoopsPerCup)
                 {
@@ -420,7 +421,7 @@ private:
                 }
                 else
                 {
-                    cout << "podano zla ilosc galek lodow\n";
+                    cout << "Podano zla ilosc galek\n";
                 }
             } while (inputedScoopsAmountIsError);
 
@@ -467,9 +468,9 @@ private:
             int sortByCategoryOptionIndex = iceCreamListSize;
             for (int i = 0; i < selectedScoopsAmount; i++)
             {
-                cout << "wybierz smak: " << i + 1 << "\n";
+                cout << "Wybierz smak lodow: " << i + 1 << "\n";
                 printIceCreamListSelect(iceCreamList);
-                cout << iceCreamListSize + 1 << " - posortuj po kategorii\n";
+                cout << iceCreamListSize + 1 << " - Posortuj po kategorii\n";
                 cin >> selectedIndex;
                 selectedIndex--;
 
@@ -515,7 +516,7 @@ public:
     {
         Receipt iceCreamReceipt;
         // -- user select info --
-        cout << "wybrales typ: lody\n";
+        cout << "Wybrales lody\n";
 
         // -- cup type select --
         int selectedCupIndex = menuControllerTools.cupTypeSelect(iceCreamReceipt);
@@ -591,12 +592,12 @@ public:
     static void printCoffeeCategory()
     {
         int availableCategoryListSize = availableCategoryList.size();
-        cout << "dostepne kategorie Kawy:\n";
+        cout << "Dostepne rodzaje kawy:\n";
         for (int i = 0; i < availableCategoryListSize; i++)
         {
             cout << i + 1 << " - " << availableCategoryList.at(i).getCategoryName() << "\n";
         }
-        cout << availableCategoryListSize + 1 << " - bez kategorii\n";
+        cout << availableCategoryListSize + 1 << " - Bez kategorii\n";
     }
 };
 vector<CoffeeCategory> Coffee::availableCategoryList;
@@ -614,7 +615,7 @@ private:
         {
             char selectedOption;
             cout << "1 - Na wynos\n"
-                 << "Dowolna wartosc - Na miejscu\n";
+                 << "Dowolna wartosc - na miejscu\n";
             cin >> selectedOption;
             if (selectedOption == '1')
             {
@@ -688,10 +689,10 @@ private:
             int sortByCategoryOptionIndex = coffeeListSize;
             cout << "Czy chcesz wziac kawe na wynos?\n";
             takeAwaySelect(coffeeReceipt);
-            cout << "Wybierz typ kawy: "
+            cout << "Wybierz rodzaj kawy: "
                  << "\n";
             printCoffeeListSelect(coffeeList);
-            cout << coffeeListSize + 1 << " - posortuj po kategorii\n";
+            cout << coffeeListSize + 1 << " - Posortuj po kategorii\n";
             cin >> selectedIndex;
             selectedIndex--;
 
@@ -738,7 +739,7 @@ public:
     {
         Receipt coffeeReceipt;
         // -- user select info --
-        cout << "wybrales typ: Kawa\n";
+        cout << "Wybrales kawe\n";
 
         menuControllerTools.coffeeTypeSelect(this->coffeeList, coffeeReceipt);
         return coffeeReceipt;
@@ -770,11 +771,12 @@ public:
     void frontEndCore()
     {
         int selectedProductType;
-        cout << "-----Witaj w automacie--------\n";
-        cout << "Wybierz co chcesz kupic\n";
-        cout << "Wybierz opcje (numer 1 - lody)\n";
-        cout << "Wybierz opcje (numer 2 - ciasto)\n";
-        cout << "Wybierz opcje (numer 3 - kawa)\n";
+        cout << "----------Witaj !----------\n";
+        cout << "Na co masz ochote?\n";
+        cout << "1 - Lody\n";
+        cout << "2 - Ciasto\n";
+        cout << "3 - Kawa\n";
+        cout << "Wpisz odpowiedni numer: \n";
         cin >> selectedProductType;
 
         if (selectedProductType == 1) //Ice cream path
@@ -801,48 +803,48 @@ public:
         //----------------------------------------------
         //------ start build coffee -----------
         int coffeeCategory1 = Coffee::addNewCoffeeCategory(CoffeeCategory("Bez kofeiny"));
-        int coffeeCategory2 = Coffee::addNewCoffeeCategory(CoffeeCategory("Z kofeiną"));
+        int coffeeCategory2 = Coffee::addNewCoffeeCategory(CoffeeCategory("Z kofeina"));
         int coffeeCategory3 = Coffee::addNewCoffeeCategory(CoffeeCategory("Bez cukru"));
 
-        coffeeController.addCoffeeToList(Coffee("Latte bez kofeiny", 44, coffeeCategory1));
-        coffeeController.addCoffeeToList(Coffee("Kawa czarna bez kofeiny", 45, coffeeCategory1));
-        coffeeController.addCoffeeToList(Coffee("Latte Machiato bez kofeiny", 46, coffeeCategory1));
+        coffeeController.addCoffeeToList(Coffee("Latte bez kofeiny", 11.9, coffeeCategory1));
+        coffeeController.addCoffeeToList(Coffee("Espresso bez kofeiny", 6.9, coffeeCategory1));
+        coffeeController.addCoffeeToList(Coffee("Latte Machiato bez kofeiny", 12.9, coffeeCategory1));
 
-        coffeeController.addCoffeeToList(Coffee("Latte", 55, coffeeCategory2));
-        coffeeController.addCoffeeToList(Coffee("Espresso", 56, coffeeCategory2));
-        coffeeController.addCoffeeToList(Coffee("Latte Machiato", 57, coffeeCategory2));
+        coffeeController.addCoffeeToList(Coffee("Latte", 10.9, coffeeCategory2));
+        coffeeController.addCoffeeToList(Coffee("Espresso", 5.9, coffeeCategory2));
+        coffeeController.addCoffeeToList(Coffee("Latte Machiato", 11.9, coffeeCategory2));
 
-        coffeeController.addCoffeeToList(Coffee("Latte bez cukru", 50, coffeeCategory3));
-        coffeeController.addCoffeeToList(Coffee("Espresso bez cukru", 51, coffeeCategory3));
-        coffeeController.addCoffeeToList(Coffee("Latte Machiato bez cukru", 52, coffeeCategory3));
+        coffeeController.addCoffeeToList(Coffee("Latte bez cukru", 10.4, coffeeCategory3));
+        coffeeController.addCoffeeToList(Coffee("Espresso bez cukru", 5.4, coffeeCategory3));
+        coffeeController.addCoffeeToList(Coffee("Latte Machiato bez cukru", 11.4, coffeeCategory3));
         //------ end build coffee -----------
         //----------------------------------------------
 
-        this->addCakeToList(Cake("cake1", 1));
-        this->addCakeToList(Cake("cake2", 2));
-        this->addCakeToList(Cake("cake3", 3));
+        this->addCakeToList(Cake("Szarlotka", 6.5));
+        this->addCakeToList(Cake("Sernik", 5.9));
+        this->addCakeToList(Cake("Brownie", 9.4));
 
         //----------------------------------------------
         //------ start build ice cream -----------
-        IceCream::addNewCupType(IceCreamCupType("slodki rozek", 1.5, 4));
-        IceCream::addNewCupType(IceCreamCupType("zwykly", 0.5, 2));
-        IceCream::addNewCupType(IceCreamCupType("zwykly-duzy", 1.1, 3));
+        IceCream::addNewCupType(IceCreamCupType("Slodki rozek", 1.5, 4));
+        IceCream::addNewCupType(IceCreamCupType("Plastikowy kubeczek", 0.5, 2));
+        IceCream::addNewCupType(IceCreamCupType("Wafelkowa salaterka", 1.1, 3));
 
         int iceCreamCategory1 = IceCream::addNewIceCreamCategory(IceCreamCategory("Bez laktozy"));
         int iceCreamCategory2 = IceCream::addNewIceCreamCategory(IceCreamCategory("Bez glutenu"));
-        int iceCreamCategory3 = IceCream::addNewIceCreamCategory(IceCreamCategory("inne"));
+        int iceCreamCategory3 = IceCream::addNewIceCreamCategory(IceCreamCategory("Klasyczne"));
 
-        iceCreamController.addIceCreamToList(IceCream("smak1 bez laktozy", 44, iceCreamCategory1));
-        iceCreamController.addIceCreamToList(IceCream("smak2 bez laktozy", 45, iceCreamCategory1));
-        iceCreamController.addIceCreamToList(IceCream("smak3 bez laktozy", 46, iceCreamCategory1));
+        iceCreamController.addIceCreamToList(IceCream("Karmelowy bez laktozy", 2.5, iceCreamCategory1));
+        iceCreamController.addIceCreamToList(IceCream("Waniliowy bez laktozy", 2.3, iceCreamCategory1));
+        iceCreamController.addIceCreamToList(IceCream("Malinowy bez laktozy", 2.4, iceCreamCategory1));
 
-        iceCreamController.addIceCreamToList(IceCream("smak21 bez glutenu", 55, iceCreamCategory2));
-        iceCreamController.addIceCreamToList(IceCream("smak22 bez glutenu", 56, iceCreamCategory2));
-        iceCreamController.addIceCreamToList(IceCream("smak23 bez glutenu", 57, iceCreamCategory2));
+        iceCreamController.addIceCreamToList(IceCream("Karmelowy bez glutenu", 2.6, iceCreamCategory2));
+        iceCreamController.addIceCreamToList(IceCream("Waniliowy bez glutenu", 2.4, iceCreamCategory2));
+        iceCreamController.addIceCreamToList(IceCream("Malinowy bez glutenu", 2.5, iceCreamCategory2));
 
-        iceCreamController.addIceCreamToList(IceCream("smak31", 66, iceCreamCategory3));
-        iceCreamController.addIceCreamToList(IceCream("smak32", 67, iceCreamCategory3));
-        iceCreamController.addIceCreamToList(IceCream("smak33", 68, iceCreamCategory3));
+        iceCreamController.addIceCreamToList(IceCream("Karmelowy", 2, iceCreamCategory3));
+        iceCreamController.addIceCreamToList(IceCream("Waniliowy", 1.8, iceCreamCategory3));
+        iceCreamController.addIceCreamToList(IceCream("Malinowy", 1.9, iceCreamCategory3));
 
         //------ end build ice cream -----------
         //----------------------------------------------
