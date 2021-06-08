@@ -13,6 +13,28 @@ void PRINT_DEV(string msg)
     }
 }
 
+class MenuSelectItemFrontendBackendConnector
+{
+private:
+    int frontendListNumber;
+    int backendListIndex;
+
+public:
+    MenuSelectItemFrontendBackendConnector() {}
+    MenuSelectItemFrontendBackendConnector(int frontendListNumber, int backendListIndex)
+        : frontendListNumber(frontendListNumber), backendListIndex(backendListIndex)
+    {
+    }
+    int getFrontendListNumber()
+    {
+        return this->frontendListNumber;
+    }
+    int getBackendListIndex()
+    {
+        return this->backendListIndex;
+    }
+};
+
 //--- start Recipt section ------
 class ReciptItem
 {
@@ -124,6 +146,34 @@ public:
     }
 };
 
+// class ProductCategory
+// {
+// protected:
+//     string name;
+//     int categoryIndex;
+//     static int categoryIndexGenerator;
+
+// public:
+//     ProductCategory()
+//     {
+//         this->categoryIndex = categoryIndexGenerator;
+//         categoryIndexGenerator++;
+//     }
+//     ProductCategory(string name)
+//         : name(name)
+//     {
+//         this->categoryIndex = categoryIndexGenerator;
+//         categoryIndexGenerator++;
+//     }
+//     int getCategoryID()
+//     {
+//         return this->categoryIndex;
+//     }
+//     string getCategoryName()
+//     {
+//         return this->name;
+//     }
+// };
 //-----------------------------------------
 //-------- start ice cream section -------
 class IceCreamCategory
@@ -241,28 +291,6 @@ public:
 };
 vector<IceCreamCupType> IceCream::iceCreamCupTypeList;
 vector<IceCreamCategory> IceCream::availableCategoryList;
-
-class MenuSelectItemFrontendBackendConnector
-{
-private:
-    int frontendListNumber;
-    int backendListIndex;
-
-public:
-    MenuSelectItemFrontendBackendConnector() {}
-    MenuSelectItemFrontendBackendConnector(int frontendListNumber, int backendListIndex)
-        : frontendListNumber(frontendListNumber), backendListIndex(backendListIndex)
-    {
-    }
-    int getFrontendListNumber()
-    {
-        return this->frontendListNumber;
-    }
-    int getBackendListIndex()
-    {
-        return this->backendListIndex;
-    }
-};
 
 class IceCreamController
 {
@@ -620,14 +648,7 @@ public:
         Receipt coffeeReceipt;
         // -- user select info --
         cout << "wybrales typ: Kawa\n";
-        // -- cup type select --
-        //int selectedCupIndex = menuControllerTools.coffeeTypeSelect(coffeeReceipt);
-        //int maxAmountofScoopsPerCup = IceCream::getMaxScoopsAmountFromCupList(selectedCupIndex);
 
-        // -- scoops amounts select --
-        //int selectedScoopsAmount = menuControllerTools.scoopsAmountSelect(maxAmountofScoopsPerCup);
-
-        // -- scoops tastes select --
         menuControllerTools.coffeeTypeSelect(this->coffeeList, coffeeReceipt);
         return coffeeReceipt;
     }
@@ -688,9 +709,6 @@ public:
 
         //----------------------------------------------
         //------ start build coffee -----------
-        //IceCream::addNewCupType(IceCreamCupType("slodki rozek", 1.5, 4));
-        //IceCream::addNewCupType(IceCreamCupType("zwykly", 0.5, 2));
-        //IceCream::addNewCupType(IceCreamCupType("zwykly-duzy", 1.1, 3));
         int coffeeCategory1 = Coffee::addNewCoffeeCategory(CoffeeCategory("Bez kofeiny"));
         int coffeeCategory2 = Coffee::addNewCoffeeCategory(CoffeeCategory("Z kofeiną"));
         int coffeeCategory3 = Coffee::addNewCoffeeCategory(CoffeeCategory("Bez cukru"));
@@ -708,11 +726,6 @@ public:
         coffeeController.addCoffeeToList(Coffee("Latte Machiato bez cukru", 52, coffeeCategory3));
         //------ end build coffee -----------
         //----------------------------------------------
-
-        /*this->addShakeToList(Shake("shake1",11));
-        this->addShakeToList(Shake("shake2", 22));
-        this->addShakeToList(Shake("shake3", 33));
-        this->addShakeToList(Shake("shake4", 44));*/
 
         this->addCakeToList(Cake("cake1", 1));
         this->addCakeToList(Cake("cake2", 2));
@@ -763,11 +776,19 @@ int main()
 6. lody z alkoholem
 7. możliwość wyboru i lodow i ciastek np kupić 2 loady i 3 ciasta
 8. system do wydawnaie reszty  monet
+9. ZROBIĆ GŁÓWNA FUNCKJE DO WALIDACJI INPUTÓW
 
 
 TODO Szymon
 //1. menu dla coffee -> done
 2. menu dla cake
 3. isWithMilk() linie okolo 500 przeniszc cena mleka do setupu
+
+*/
+
+/*
+TODO możliwe funkcje virtualne
+1. printIceCreamListSelect
+2. printIceCreamListSelectByCategory
 
 */

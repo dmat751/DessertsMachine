@@ -22,6 +22,15 @@
       "assignedTo": {
         "name": "Dawid Matras"
       },
+      "creation_time": "2021-06-04T10:03:03.827Z",
+      "id": "10",
+      "references": [],
+      "title": "przerobić funckje drukujące"
+    },
+    {
+      "assignedTo": {
+        "name": "Dawid Matras"
+      },
       "creation_time": "2021-05-31T07:40:21.091Z",
       "id": "2",
       "references": [],
@@ -40,41 +49,13 @@
       "assignedTo": {
         "name": "Dawid Matras"
       },
-      "creation_time": "2021-05-31T07:41:19.282Z",
-      "id": "5",
-      "references": [],
-      "title": "zrobic segregace lodow po typie np. bez laktozy, bez glutenu,"
-    },
-    {
-      "assignedTo": {
-        "name": "Dawid Matras"
-      },
       "creation_time": "2021-05-31T11:14:18.063Z",
       "id": "9",
       "references": [],
       "title": "zrobić sumowanie kwoty w paragonie"
-    },
-    {
-      "assignedTo": {
-        "name": "Dawid Matras"
-      },
-      "creation_time": "2021-06-04T10:03:03.827Z",
-      "id": "10",
-      "references": [],
-      "title": "przerobić funckje drukujące"
     }
   ],
-  "in-progress": [
-    {
-      "assignedTo": {
-        "name": "Dawid Matras"
-      },
-      "creation_time": "2021-05-31T11:13:21.134Z",
-      "id": "8",
-      "references": [],
-      "title": "sort ice crem by category"
-    }
-  ],
+  "in-progress": [],
   "testing": [],
   "done": [
     {
@@ -94,6 +75,24 @@
       "id": "3",
       "references": [],
       "title": "zrobic klase paragon"
+    },
+    {
+      "assignedTo": {
+        "name": "Dawid Matras"
+      },
+      "creation_time": "2021-05-31T07:41:19.282Z",
+      "id": "5",
+      "references": [],
+      "title": "zrobic segregace lodow po typie np. bez laktozy, bez glutenu,"
+    },
+    {
+      "assignedTo": {
+        "name": "Dawid Matras"
+      },
+      "creation_time": "2021-05-31T11:13:21.134Z",
+      "id": "8",
+      "references": [],
+      "title": "sort ice crem by category"
     }
   ]
 }
