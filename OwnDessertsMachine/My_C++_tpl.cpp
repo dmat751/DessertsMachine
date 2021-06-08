@@ -13,6 +13,61 @@ void PRINT_DEV(string msg)
     }
 }
 
+//---Start UserInput section---
+class UserInputController
+{
+public:
+    const double validatedInput(double max)
+    {
+        double userInput;
+        int repeat = 1;
+        if (max < 0)
+        {
+            while (true)
+            {
+                std::cin >> userInput;
+                if (std::cin.fail())
+                {
+                    std::cin.clear();
+                    std::cin.ignore(512, '\n');
+                    std::cout << "Blad danych, podaj wartosc wieksza od 0!\n";
+                }
+                else if (userInput > 0)
+                {
+                    break;
+                }
+                else
+                {
+                    std::cout << "Podaj wartosc wieksza od 0!\n";
+                }
+            }
+        }
+        else
+        {
+            while (true)
+            {
+                std::cin >> userInput;
+                if (std::cin.fail())
+                {
+                    std::cin.clear();
+                    std::cin.ignore(512, '\n');
+                    std::cout << "Blad danych, podaj wartosc wieksza od 0!\n";
+                }
+                else if (userInput > 0 && userInput < max)
+                {
+                    break;
+                }
+                else
+                {
+                    std::cout << "Podaj wartosc wieksza od 0 i mniejsza od " << max << "!\n";
+                }
+            }
+        }
+        return userInput;
+    }
+};
+
+//-- end UserInput section ---
 class MenuSelectItemFrontendBackendConnector
 {
 private:
@@ -57,7 +112,7 @@ public:
     }
 };
 
-class Receipt
+class Receipt : public UserInputController
 {
 private:
     vector<ReciptItem> reciptItemList;
@@ -78,13 +133,49 @@ public:
             this->addItemToReceipt(receiptToAdd.reciptItemList.at(i));
         }
     }
+    const double billChange(double &toPay)
+    {
+        double paid;
+        paid = validatedInput(-1);
+        while (paid < toPay)
+        {
+            cout << "Brakuje jeszcze: " << toPay - paid << "\n";
+            paid += validatedInput(-1);
+        }
+        return (paid - toPay);
+    }
     void generateRecipt()
     {
-        cout << "\n\n\n====paragon======\n";
+        int tabulatorsCount;
+        double sum = 0, paid;
         for (int i = 0; i < this->reciptItemList.size(); i++)
         {
-            cout << "nazwa produktu: " << this->reciptItemList.at(i).getName() << " cena: " << this->reciptItemList.at(i).getPrice() << "\n";
+            sum += this->reciptItemList.at(i).getPrice();
         }
+        cout << "\nDo zaplaty: " << sum;
+        cout << "\nZaplacono: ";
+        paid = billChange(sum);
+        cout << "\n\n\n=================Paragon=================\n| Nazwa \t\t\tCena\t|\n";
+        cout << "| ------------------------------------- |\n";
+        for (int i = 0; i < this->reciptItemList.size(); i++)
+        {
+            tabulatorsCount = 4 - ((this->reciptItemList.at(i).getName().length() + 2) / 8);
+            //std::cout.width(30);
+            //std::cout << cout.fill('=') << "Paragon" << cout.fill('=');
+            cout << "| " << this->reciptItemList.at(i).getName();
+            //std::cout << ('| ' + this->reciptItemList.at(i).getPrice()) << '|';
+            for (int j = 0; j < tabulatorsCount; ++j)
+            {
+                cout << "\t";
+            }
+            cout << this->reciptItemList.at(i).getPrice() << " \t|\n";
+        }
+        cout << "| ------------------------------------- |\n";
+        cout << "| Suma:\t\t\t\t" << sum << "\t|\n";
+        cout << "| W tym VAT:\t\t\t" << sum * 0.23 << "\t|\n";
+        cout << "| Zaplacono:\t\t\t" << paid + sum << "\t|\n";
+        cout << "| Reszta:\t\t\t" << paid << "\t|\n";
+        cout << "=================Paragon=================\n";
         cout << "koniec paragonu";
     }
 };
@@ -115,7 +206,7 @@ public:
 //--- end DessertAddon section ------
 
 //--- start Dessert section ------
-class Dessert
+class Dessert : public UserInputController
 {
 private:
     string name;
@@ -538,7 +629,7 @@ private:
             cout << "1 - Z mlekiem\n"
                  << "Dowolna wartosc - Bez mleka\n";
             cin >> selectedOption;
-            if (selectedOption == 1)
+            if (selectedOption == '1')
             {
                 cout << "\n-------\nDodaje mleko.\n";
                 return 1.20;
