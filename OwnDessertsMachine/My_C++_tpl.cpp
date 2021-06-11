@@ -17,7 +17,56 @@ void PRINT_DEV(string msg)
 class UserInputController
 {
 public:
-    const double validatedInput(double max)
+    static const double validatedInput(double max)
+    {
+        double userInput;
+        int repeat = 1;
+        if (max < 0)
+        {
+            while (true)
+            {
+                std::cin >> userInput;
+                if (std::cin.fail())
+                {
+                    std::cin.clear();
+                    std::cin.ignore(512, '\n');
+                    std::cout << "Blad danych, podaj wartosc wieksza od 0!\n";
+                }
+                else if (userInput > 0)
+                {
+                    break;
+                }
+                else
+                {
+                    std::cout << "Podaj wartosc wieksza od 0!\n";
+                }
+            }
+        }
+        else
+        {
+            while (true)
+            {
+                std::cin >> userInput;
+                if (std::cin.fail())
+                {
+                    std::cin.clear();
+                    std::cin.ignore(512, '\n');
+                    std::cout << "Blad danych, podaj wartosc wieksza od 0!\n";
+                }
+                else if (userInput > 0 && userInput < max)
+                {
+                    break;
+                }
+                else
+                {
+                    std::cout << "Podaj wartosc wieksza od 0 i mniejsza od " << max << "!\n";
+                }
+            }
+        }
+        return userInput;
+    }
+
+    static const double validatedInput(int max)
     {
         double userInput;
         int repeat = 1;
@@ -112,7 +161,7 @@ public:
     }
 };
 
-class Receipt : public UserInputController
+class Receipt
 {
 private:
     vector<ReciptItem> reciptItemList;
@@ -136,11 +185,11 @@ public:
     const double billChange(double &toPay)
     {
         double paid;
-        paid = validatedInput(-1);
+        paid = UserInputController::validatedInput(-1);
         while (paid < toPay)
         {
             cout << "Brakuje jeszcze: " << toPay - paid << "\n";
-            paid += validatedInput(-1);
+            paid += UserInputController::validatedInput(-1);
         }
         return (paid - toPay);
     }
@@ -206,7 +255,7 @@ public:
 //--- end DessertAddon section ------
 
 //--- start Dessert section ------
-class Dessert : public UserInputController
+class Dessert
 {
 private:
     string name;
@@ -224,16 +273,6 @@ public:
     double getPrice()
     {
         return this->price;
-    }
-};
-
-class Cake : public Dessert
-{
-private:
-public:
-    Cake(string name, double price)
-        : Dessert(name, price)
-    {
     }
 };
 
@@ -347,14 +386,10 @@ public:
         }
     }
 
+    // cup section
     static void addNewCupType(IceCreamCupType newType)
     {
         iceCreamCupTypeList.push_back(newType);
-    }
-
-    static int getMaxScoopsAmountFromCupList(int itemIndex)
-    {
-        return iceCreamCupTypeList.at(itemIndex).getMaxScoops();
     }
 
     static double getCupPrice(int cupIndex)
@@ -369,7 +404,7 @@ public:
         return name;
     }
 
-    static void printAvaiableCupList()
+    static void printAvailableCupList()
     {
         for (int i = 0; i < iceCreamCupTypeList.size(); i++)
         {
@@ -378,6 +413,16 @@ public:
             int maxScoops = iceCreamCupTypeList.at(i).getMaxScoops();
             cout << (i + 1) << " - " << name << " (cena: " << price << " ,max galek: " << maxScoops << ")\n";
         }
+    }
+    static int getAvailableCupListSize()
+    {
+        return iceCreamCupTypeList.size();
+    }
+
+    // scoop section
+    static int getMaxScoopsAmountFromCupList(int itemIndex)
+    {
+        return iceCreamCupTypeList.at(itemIndex).getMaxScoops();
     }
 };
 vector<IceCreamCupType> IceCream::iceCreamCupTypeList;
@@ -395,10 +440,11 @@ private:
         int cupTypeSelect(Receipt &iceCreamReceipt)
         {
             cout << "\nWybierz typ kubka\n";
-            IceCream::printAvaiableCupList();
+            IceCream::printAvailableCupList();
             cout << "Wpisz odpowiedni numer: ";
-            int select;
-            cin >> select;
+            bool inputedAmountIsError = true;
+
+            int select = UserInputController::validatedInput(IceCream::getAvailableCupListSize() + 1);
             select--;
 
             double selectScoopPrice = IceCream::getCupPrice(select);
@@ -410,21 +456,8 @@ private:
         int scoopsAmountSelect(int maxAmountOfScoopsPerCup)
         {
             int inputedScoopsAmount;
-            bool inputedScoopsAmountIsError = true;
-            do
-            {
-                cout << "Ile chcesz galek lodow ?\n";
-                cin >> inputedScoopsAmount;
-                if (inputedScoopsAmount <= maxAmountOfScoopsPerCup)
-                {
-                    inputedScoopsAmountIsError = false;
-                }
-                else
-                {
-                    cout << "Podano zla ilosc galek\n";
-                }
-            } while (inputedScoopsAmountIsError);
-
+            cout << "Ile chcesz galek lodow ?\n";
+            UserInputController::validatedInput(maxAmountOfScoopsPerCup + 1);
             return inputedScoopsAmount;
         }
 
@@ -748,11 +781,253 @@ public:
 //-------- end coffee section -------
 //-----------------------------------------
 
+//-----------------------------------------
+//-------- start Cake section -------
+class CakeCategory
+{
+private:
+    string name;
+    int categoryIndex;
+    static int categoryIndexGenrator;
+
+public:
+    CakeCategory()
+    {
+        this->categoryIndex = categoryIndexGenrator;
+        categoryIndexGenrator++;
+    }
+    CakeCategory(string name)
+        : name(name)
+    {
+        this->categoryIndex = categoryIndexGenrator;
+        categoryIndexGenrator++;
+    }
+    int getCategoryID()
+    {
+        return this->categoryIndex;
+    }
+    string getCategoryName()
+    {
+        return this->name;
+    }
+};
+int CakeCategory::categoryIndexGenrator = 0;
+
+class CakeSprinkles : public DessertAddon
+{
+private:
+public:
+    CakeSprinkles(string name, double price)
+        : DessertAddon(name, price)
+    {
+    }
+};
+
+class Cake : public Dessert
+{
+private:
+    static vector<CakeCategory> availableCategoryList;
+    static vector<CakeSprinkles> cakeSprinklesList;
+    int categoryIndex;
+
+public:
+    Cake(string name, double price, int categoryID)
+        : Dessert(name, price), categoryIndex(categoryID)
+    {
+    }
+
+    int getCategoryIndex()
+    {
+        return this->categoryIndex;
+    }
+    static void addNewCakeSprinkle(CakeSprinkles newSprinkle)
+    {
+        cakeSprinklesList.push_back(newSprinkle);
+    }
+    static double getSprinklePrice(int Index)
+    {
+        double price = cakeSprinklesList.at(Index).getAddonPrice();
+        return price;
+    }
+    static string getSprinkleName(int Index)
+    {
+        string name = cakeSprinklesList.at(Index).getAddonName();
+        return name;
+    }
+    static int addNewCakeCategory(CakeCategory newCakeCategory)
+    {
+        availableCategoryList.push_back(newCakeCategory);
+        return newCakeCategory.getCategoryID();
+    }
+
+    static void printCakeCategory()
+    {
+        int availableCategoryListSize = availableCategoryList.size();
+        cout << "Dostepne rodzaje ciast:\n";
+        for (int i = 0; i < availableCategoryListSize; i++)
+        {
+            cout << i + 1 << " - " << availableCategoryList.at(i).getCategoryName() << "\n";
+        }
+        //        cout << availableCategoryListSize + 1 << " - Bez kategorii\n";
+    }
+    static void printCakeSprinklesList()
+    {
+        cout << "---------------\nDostepne rodzaje posypek:\n";
+        for (int i = 0; i < cakeSprinklesList.size(); i++)
+        {
+            string name = cakeSprinklesList.at(i).getAddonName();
+            double price = cakeSprinklesList.at(i).getAddonPrice();
+            cout << (i + 1) << " - " << name << " (cena: " << price << ")\n";
+        }
+    }
+};
+vector<CakeCategory> Cake::availableCategoryList;
+vector<CakeSprinkles> Cake::cakeSprinklesList;
+class CakeController
+{
+private:
+    class MenuControllerTools
+    {
+    public:
+        MenuControllerTools()
+        {
+        }
+        const double isTakeAway()
+        {
+            char selectedOption;
+            cout << "1 - Na wynos\n"
+                 << "Dowolna wartosc - na miejscu\n";
+            cin >> selectedOption;
+            if (selectedOption == '1')
+            {
+                cout << "\n-------\nWybrany deser zostanie zapakowany w opakowanie.\n";
+                return 1.50;
+            }
+            return 0;
+        }
+        void takeAwaySelect(Receipt &cakeReceipt)
+        {
+            //Cake::printAvaiableCupList();
+            cakeReceipt.addItemToReceipt(ReciptItem(isTakeAway(), "Opakowanie"));
+        }
+
+        void printCakeListSelect(vector<Cake> &cakeList)
+        {
+
+            for (int i = 0; i < cakeList.size(); i++)
+            {
+                cout << i + 1 << " - " << cakeList.at(i).getName() << "\n";
+            }
+        }
+        int cakeSprinklesSelect(Receipt &cakeReceipt)
+        {
+            cout << "\nWybierz typ posypki\n";
+            Cake::printCakeSprinklesList();
+            cout << "Wpisz odpowiedni numer: ";
+            int select;
+            cin >> select;
+            select--;
+
+            double selectSprinklePrice = Cake::getSprinklePrice(select);
+            string selectSprinkleName = Cake::getSprinkleName(select);
+            cakeReceipt.addItemToReceipt(ReciptItem(selectSprinklePrice, selectSprinkleName));
+            return select;
+        }
+
+        vector<MenuSelectItemFrontendBackendConnector> printCakeSelectByCategory(vector<Cake> &cakeList, int categoryIndex = -1)
+        {
+            vector<MenuSelectItemFrontendBackendConnector> listToReturn;
+            if (categoryIndex == -1)
+            {
+                return listToReturn;
+            }
+            int counter = 1;
+            for (int i = 0; i < cakeList.size(); i++)
+            {
+                if (cakeList.at(i).getCategoryIndex() == categoryIndex)
+                {
+                    cout << counter << " - " << cakeList.at(i).getName() << "\n";
+                    listToReturn.push_back(MenuSelectItemFrontendBackendConnector(counter, i));
+                    counter++;
+                }
+                else
+                {
+                    continue;
+                }
+            }
+            return listToReturn;
+        }
+
+        void cakeTypeSelect(vector<Cake> &cakeList, Receipt &cakeReceipt)
+        {
+            int selectedIndex;
+            int categorySelectedIndex;
+            int cakeListSize = cakeList.size();
+            int sortByCategoryOptionIndex = cakeListSize;
+            cout << "Czy chcesz wziac ciasto na wynos?\n";
+            takeAwaySelect(cakeReceipt);
+            cout << "Wybierz rodzaj ciasta: "
+                 << "\n";
+            printCakeListSelect(cakeList);
+            cout << cakeListSize + 1 << " - Posortuj po kategorii\n";
+            cin >> selectedIndex;
+            selectedIndex--;
+
+            if (selectedIndex == sortByCategoryOptionIndex) // if user select print by category
+            {
+                Cake::printCakeCategory();
+                cin >> categorySelectedIndex;
+                categorySelectedIndex--;
+                vector<MenuSelectItemFrontendBackendConnector> frontendBackendConnectionsList =
+                    printCakeSelectByCategory(cakeList, categorySelectedIndex);
+                cin >> selectedIndex;
+                auto backendIndexElement = find_if(frontendBackendConnectionsList.begin(), frontendBackendConnectionsList.end(), [selectedIndex](MenuSelectItemFrontendBackendConnector &obj)
+                                                   { return obj.getFrontendListNumber() == selectedIndex; });
+                selectedIndex = (*backendIndexElement).getBackendListIndex();
+            }
+            // -- add selected item to receipt
+            double selectCakePrice = cakeList.at(selectedIndex).getPrice();
+            string selectCakeName = cakeList.at(selectedIndex).getName();
+            cakeReceipt.addItemToReceipt(ReciptItem(selectCakePrice, selectCakeName));
+        }
+    };
+
+    vector<Cake> cakeList;
+    MenuControllerTools menuControllerTools;
+
+public:
+    CakeController()
+    {
+    }
+    void addCakeToList(Cake newCake)
+    {
+        this->cakeList.push_back(newCake);
+    }
+
+    Cake getElementFromCakeList(int index)
+    {
+        return this->cakeList.at(index);
+    }
+
+    Receipt menuControler()
+    {
+        Receipt cakeReceipt;
+        // -- user select info --
+        cout << "Wybrales ciasto\n";
+
+        menuControllerTools.cakeTypeSelect(this->cakeList, cakeReceipt);
+        menuControllerTools.cakeSprinklesSelect(cakeReceipt);
+        return cakeReceipt;
+    }
+};
+//-------- end Cake section -------
+//-----------------------------------------
+
 class DessertsMachine
 {
 private:
     CoffeeController coffeeController;
-    vector<Cake> cakeList;
+    CakeController cakeController;
     IceCreamController iceCreamController;
     Receipt machineReceipt;
     string machineName;
@@ -761,11 +1036,6 @@ public:
     DessertsMachine(string machineName)
         : machineName(machineName)
     {
-    }
-
-    void addCakeToList(Cake newCake)
-    {
-        this->cakeList.push_back(newCake);
     }
 
     void frontEndCore()
@@ -786,7 +1056,8 @@ public:
         }
         else if (selectedProductType == 2) //Cake path
         {
-            cout << "wybrales typ: ciasto\n";
+            Receipt receiptGeneratedByCakeMenu = cakeController.menuControler();
+            machineReceipt.addReceiptToEachOther(receiptGeneratedByCakeMenu);
         }
         else if (selectedProductType == 3) //Coffee path
         {
@@ -820,9 +1091,30 @@ public:
         //------ end build coffee -----------
         //----------------------------------------------
 
-        this->addCakeToList(Cake("Szarlotka", 6.5));
-        this->addCakeToList(Cake("Sernik", 5.9));
-        this->addCakeToList(Cake("Brownie", 9.4));
+        //----------------------------------------------
+        //------ start build Cake -----------
+        int cakeCategory1 = Cake::addNewCakeCategory(CakeCategory("Owocowe"));
+        int cakeCategory2 = Cake::addNewCakeCategory(CakeCategory("Z czekoladą"));
+        int cakeCategory3 = Cake::addNewCakeCategory(CakeCategory("Bez glutenu"));
+
+        cakeController.addCakeToList(Cake("Szarlotka", 2.7, cakeCategory1));
+        cakeController.addCakeToList(Cake("Ciasto wisniowe", 3.2, cakeCategory1));
+        cakeController.addCakeToList(Cake("Placek brzoskwiniowy", 3.1, cakeCategory1));
+
+        cakeController.addCakeToList(Cake("Mazurek czekoladowy", 2.9, cakeCategory2));
+        cakeController.addCakeToList(Cake("Muffinki z czekolada", 3.5, cakeCategory2));
+        cakeController.addCakeToList(Cake("Sernik z polewa czekoladowa", 3.0, cakeCategory2));
+
+        cakeController.addCakeToList(Cake("Szarlotka bez glutenu", 2.8, cakeCategory3));
+        cakeController.addCakeToList(Cake("Ciasto wisniowe bez glutenu", 3.4, cakeCategory3));
+        cakeController.addCakeToList(Cake("Sernik bez glutenu", 3.3, cakeCategory3));
+
+        Cake::addNewCakeSprinkle(CakeSprinkles("Czekoladowa", 0.65));
+        Cake::addNewCakeSprinkle(CakeSprinkles("Kolorowe Cukierki", 0.9));
+        Cake::addNewCakeSprinkle(CakeSprinkles("Zelki", 0.7));
+        Cake::addNewCakeSprinkle(CakeSprinkles("Suszone owoce", 0.69));
+        //------ end build Cake -----------
+        //----------------------------------------------
 
         //----------------------------------------------
         //------ start build ice cream -----------

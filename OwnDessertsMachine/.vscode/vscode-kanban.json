@@ -7,7 +7,7 @@
       "creation_time": "2021-05-31T07:40:21.091Z",
       "id": "2",
       "references": [],
-      "title": "zabezpieczyc menu przez zlym wyborem"
+      "title": "zabezpieczyc menu przez zlym wyborem + wytestować"
     },
     {
       "assignedTo": {
@@ -22,19 +22,28 @@
       "assignedTo": {
         "name": "Dawid"
       },
-      "creation_time": "2021-06-08T18:36:53.782Z",
-      "id": "11",
+      "creation_time": "2021-06-08T18:37:05.718Z",
+      "id": "12",
       "references": [],
-      "title": "zrobić dobre zaokrąglenie waluty w paragonie"
+      "title": "zrobic walute w paragonie i  zaokrąglenie waluty w paragonie"
     },
     {
       "assignedTo": {
         "name": "Dawid"
       },
-      "creation_time": "2021-06-08T18:37:05.718Z",
-      "id": "12",
+      "creation_time": "2021-06-08T18:43:42.499Z",
+      "id": "14",
       "references": [],
-      "title": "zrobic walute w paragonie"
+      "title": "zrobić wirtualnosc dla kategorii"
+    },
+    {
+      "assignedTo": {
+        "name": "Dawid"
+      },
+      "creation_time": "2021-06-11T08:08:56.171Z",
+      "id": "16",
+      "references": [],
+      "title": "dodac ceny w liscie produktow"
     }
   ],
   "in-progress": [],
@@ -87,6 +96,15 @@
     },
     {
       "assignedTo": {
+        "name": "Dawid"
+      },
+      "creation_time": "2021-06-08T18:47:18.375Z",
+      "id": "15",
+      "references": [],
+      "title": "UML"
+    },
+    {
+      "assignedTo": {
         "name": "Dawid Matras"
       },
       "creation_time": "2021-05-31T07:40:41.650Z",
@@ -102,6 +120,15 @@
       "id": "5",
       "references": [],
       "title": "zrobic segregace lodow po typie np. bez laktozy, bez glutenu,"
+    },
+    {
+      "assignedTo": {
+        "name": "Dawid"
+      },
+      "creation_time": "2021-06-08T18:43:29.811Z",
+      "id": "13",
+      "references": [],
+      "title": "zrobić klase cake"
     },
     {
       "assignedTo": {
