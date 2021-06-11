@@ -66,9 +66,9 @@ public:
         return userInput;
     }
 
-    static const double validatedInput(int max)
+    static const int validatedInput(int max)
     {
-        double userInput;
+        int userInput;
         int repeat = 1;
         if (max < 0)
         {
@@ -276,34 +276,6 @@ public:
     }
 };
 
-// class ProductCategory
-// {
-// protected:
-//     string name;
-//     int categoryIndex;
-//     static int categoryIndexGenerator;
-
-// public:
-//     ProductCategory()
-//     {
-//         this->categoryIndex = categoryIndexGenerator;
-//         categoryIndexGenerator++;
-//     }
-//     ProductCategory(string name)
-//         : name(name)
-//     {
-//         this->categoryIndex = categoryIndexGenerator;
-//         categoryIndexGenerator++;
-//     }
-//     int getCategoryID()
-//     {
-//         return this->categoryIndex;
-//     }
-//     string getCategoryName()
-//     {
-//         return this->name;
-//     }
-// };
 //-----------------------------------------
 //-------- start ice cream section -------
 class IceCreamCategory
@@ -368,6 +340,11 @@ public:
     int getCategoryIndex()
     {
         return this->categoryIndex;
+    }
+
+    static int getAvailableCategoryListSize()
+    {
+        return availableCategoryList.size();
     }
 
     static int addNewIceCreamCategory(IceCreamCategory newIceCreamCategory)
@@ -457,7 +434,7 @@ private:
         {
             int inputedScoopsAmount;
             cout << "Ile chcesz galek lodow ?\n";
-            UserInputController::validatedInput(maxAmountOfScoopsPerCup + 1);
+            inputedScoopsAmount = UserInputController::validatedInput(maxAmountOfScoopsPerCup + 1);
             return inputedScoopsAmount;
         }
 
@@ -504,17 +481,18 @@ private:
                 cout << "Wybierz smak lodow: " << i + 1 << "\n";
                 printIceCreamListSelect(iceCreamList);
                 cout << iceCreamListSize + 1 << " - Posortuj po kategorii\n";
-                cin >> selectedIndex;
+                selectedIndex = UserInputController::validatedInput(iceCreamListSize + 2);
                 selectedIndex--;
 
                 if (selectedIndex == sortByCategoryOptionIndex) // if user select print by category
                 {
                     IceCream::printIceCreamCategory();
-                    cin >> categorySelectedIndex;
+                    categorySelectedIndex = UserInputController::validatedInput(IceCream::getAvailableCategoryListSize() + 1);
                     categorySelectedIndex--;
                     vector<MenuSelectItemFrontendBackendConnector> frontendBackendConnectionsList =
                         printIceCreamListSelectByCategory(iceCreamList, categorySelectedIndex);
-                    cin >> selectedIndex;
+                    int frontendBackendConnectionsListSize = frontendBackendConnectionsList.size();
+                    selectedIndex = UserInputController::validatedInput(frontendBackendConnectionsListSize + 1);
                     auto backendIndexElement = find_if(frontendBackendConnectionsList.begin(), frontendBackendConnectionsList.end(), [selectedIndex](MenuSelectItemFrontendBackendConnector &obj)
                                                        { return obj.getFrontendListNumber() == selectedIndex; });
                     selectedIndex = (*backendIndexElement).getBackendListIndex();
@@ -630,7 +608,6 @@ public:
         {
             cout << i + 1 << " - " << availableCategoryList.at(i).getCategoryName() << "\n";
         }
-        cout << availableCategoryListSize + 1 << " - Bez kategorii\n";
     }
 };
 vector<CoffeeCategory> Coffee::availableCategoryList;
@@ -726,17 +703,18 @@ private:
                  << "\n";
             printCoffeeListSelect(coffeeList);
             cout << coffeeListSize + 1 << " - Posortuj po kategorii\n";
-            cin >> selectedIndex;
+            selectedIndex = UserInputController::validatedInput(coffeeListSize + 2);
             selectedIndex--;
 
             if (selectedIndex == sortByCategoryOptionIndex) // if user select print by category
             {
                 Coffee::printCoffeeCategory();
-                cin >> categorySelectedIndex;
+                categorySelectedIndex = UserInputController::validatedInput(IceCream::getAvailableCategoryListSize() + 1);
                 categorySelectedIndex--;
                 vector<MenuSelectItemFrontendBackendConnector> frontendBackendConnectionsList =
                     printCoffeeSelectByCategory(coffeeList, categorySelectedIndex);
-                cin >> selectedIndex;
+                int frontendBackendConnectionsListSize = frontendBackendConnectionsList.size();
+                selectedIndex = UserInputController::validatedInput(frontendBackendConnectionsListSize + 1);
                 auto backendIndexElement = find_if(frontendBackendConnectionsList.begin(), frontendBackendConnectionsList.end(), [selectedIndex](MenuSelectItemFrontendBackendConnector &obj)
                                                    { return obj.getFrontendListNumber() == selectedIndex; });
                 selectedIndex = (*backendIndexElement).getBackendListIndex();
@@ -859,8 +837,13 @@ public:
         availableCategoryList.push_back(newCakeCategory);
         return newCakeCategory.getCategoryID();
     }
+    static int getcakeSprinklesListSize()
+    {
+        return cakeSprinklesList.size();
+    }
 
-    static void printCakeCategory()
+    static void
+    printCakeCategory()
     {
         int availableCategoryListSize = availableCategoryList.size();
         cout << "Dostepne rodzaje ciast:\n";
@@ -925,7 +908,7 @@ private:
             Cake::printCakeSprinklesList();
             cout << "Wpisz odpowiedni numer: ";
             int select;
-            cin >> select;
+            select = UserInputController::validatedInput(Cake::getcakeSprinklesListSize());
             select--;
 
             double selectSprinklePrice = Cake::getSprinklePrice(select);
@@ -970,17 +953,18 @@ private:
                  << "\n";
             printCakeListSelect(cakeList);
             cout << cakeListSize + 1 << " - Posortuj po kategorii\n";
-            cin >> selectedIndex;
+            selectedIndex = UserInputController::validatedInput(cakeListSize + 2);
             selectedIndex--;
 
             if (selectedIndex == sortByCategoryOptionIndex) // if user select print by category
             {
                 Cake::printCakeCategory();
-                cin >> categorySelectedIndex;
+                categorySelectedIndex = UserInputController::validatedInput(IceCream::getAvailableCategoryListSize() + 1);
                 categorySelectedIndex--;
                 vector<MenuSelectItemFrontendBackendConnector> frontendBackendConnectionsList =
                     printCakeSelectByCategory(cakeList, categorySelectedIndex);
-                cin >> selectedIndex;
+                int frontendBackendConnectionsListSize = frontendBackendConnectionsList.size();
+                selectedIndex = UserInputController::validatedInput(frontendBackendConnectionsListSize + 1);
                 auto backendIndexElement = find_if(frontendBackendConnectionsList.begin(), frontendBackendConnectionsList.end(), [selectedIndex](MenuSelectItemFrontendBackendConnector &obj)
                                                    { return obj.getFrontendListNumber() == selectedIndex; });
                 selectedIndex = (*backendIndexElement).getBackendListIndex();
@@ -1042,28 +1026,45 @@ public:
     {
         int selectedProductType;
         cout << "----------Witaj !----------\n";
-        cout << "Na co masz ochote?\n";
-        cout << "1 - Lody\n";
-        cout << "2 - Ciasto\n";
-        cout << "3 - Kawa\n";
-        cout << "Wpisz odpowiedni numer: \n";
-        cin >> selectedProductType;
 
-        if (selectedProductType == 1) //Ice cream path
+        bool reOrder = false;
+        do
         {
-            Receipt receiptGeneratedByIceCreamMenu = iceCreamController.menuControler();
-            machineReceipt.addReceiptToEachOther(receiptGeneratedByIceCreamMenu);
-        }
-        else if (selectedProductType == 2) //Cake path
-        {
-            Receipt receiptGeneratedByCakeMenu = cakeController.menuControler();
-            machineReceipt.addReceiptToEachOther(receiptGeneratedByCakeMenu);
-        }
-        else if (selectedProductType == 3) //Coffee path
-        {
-            Receipt receiptGeneratedByCoffeeMenu = coffeeController.menuControler();
-            machineReceipt.addReceiptToEachOther(receiptGeneratedByCoffeeMenu);
-        }
+            cout << "Na co masz ochote?\n";
+            cout << "1 - Lody\n";
+            cout << "2 - Ciasto\n";
+            cout << "3 - Kawa\n";
+            cout << "Wpisz odpowiedni numer: \n";
+            cin >> selectedProductType;
+            if (selectedProductType == 1) //Ice cream path
+            {
+                Receipt receiptGeneratedByIceCreamMenu = iceCreamController.menuControler();
+                machineReceipt.addReceiptToEachOther(receiptGeneratedByIceCreamMenu);
+            }
+            else if (selectedProductType == 2) //Cake path
+            {
+                Receipt receiptGeneratedByCakeMenu = cakeController.menuControler();
+                machineReceipt.addReceiptToEachOther(receiptGeneratedByCakeMenu);
+            }
+            else if (selectedProductType == 3) //Coffee path
+            {
+                Receipt receiptGeneratedByCoffeeMenu = coffeeController.menuControler();
+                machineReceipt.addReceiptToEachOther(receiptGeneratedByCoffeeMenu);
+            }
+            cout << "Czy chcesz zamowic cos jeszcze?\n";
+            cout << "T - tak, Dowolna wartosc - nie\n";
+            char reOrderSelect;
+            cin >> reOrderSelect;
+            if (reOrderSelect == 'T' || reOrderSelect == 't')
+            {
+                reOrder = true;
+            }
+            else
+            {
+                reOrder = false;
+            }
+        } while (reOrder);
+
         this->machineReceipt.generateRecipt();
     }
 
@@ -1094,7 +1095,7 @@ public:
         //----------------------------------------------
         //------ start build Cake -----------
         int cakeCategory1 = Cake::addNewCakeCategory(CakeCategory("Owocowe"));
-        int cakeCategory2 = Cake::addNewCakeCategory(CakeCategory("Z czekoladą"));
+        int cakeCategory2 = Cake::addNewCakeCategory(CakeCategory("Z czekolada"));
         int cakeCategory3 = Cake::addNewCakeCategory(CakeCategory("Bez glutenu"));
 
         cakeController.addCakeToList(Cake("Szarlotka", 2.7, cakeCategory1));
@@ -1148,7 +1149,7 @@ int main()
     DessertsMachine machine1("machine1");
     machine1.machineSetup();
     machine1.frontEndCore();
-    system("PAUSE");
+    // system("PAUSE");
 }
 
 //TODO
