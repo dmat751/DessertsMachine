@@ -1,5 +1,16 @@
 {
-  "todo": [
+  "todo": [],
+  "in-progress": [],
+  "testing": [
+    {
+      "assignedTo": {
+        "name": "Dawid"
+      },
+      "creation_time": "2021-06-11T08:08:56.171Z",
+      "id": "16",
+      "references": [],
+      "title": "dodac ceny w liscie produktow"
+    },
     {
       "assignedTo": {
         "name": "Dawid Matras"
@@ -11,43 +22,14 @@
     },
     {
       "assignedTo": {
-        "name": "Dawid Matras"
-      },
-      "creation_time": "2021-05-31T07:42:32.524Z",
-      "id": "6",
-      "references": [],
-      "title": "zrobic mozliwosc ponownego wyboru np zeby mona bylo kupic 2 lody i 3 kaw"
-    },
-    {
-      "assignedTo": {
         "name": "Dawid"
       },
       "creation_time": "2021-06-08T18:37:05.718Z",
       "id": "12",
       "references": [],
       "title": "zrobic walute w paragonie i  zaokrąglenie waluty w paragonie"
-    },
-    {
-      "assignedTo": {
-        "name": "Dawid"
-      },
-      "creation_time": "2021-06-08T18:43:42.499Z",
-      "id": "14",
-      "references": [],
-      "title": "zrobić wirtualnosc dla kategorii"
-    },
-    {
-      "assignedTo": {
-        "name": "Dawid"
-      },
-      "creation_time": "2021-06-11T08:08:56.171Z",
-      "id": "16",
-      "references": [],
-      "title": "dodac ceny w liscie produktow"
     }
   ],
-  "in-progress": [],
-  "testing": [],
   "done": [
     {
       "assignedTo": {
@@ -111,6 +93,15 @@
       "id": "3",
       "references": [],
       "title": "zrobic klase paragon"
+    },
+    {
+      "assignedTo": {
+        "name": "Dawid Matras"
+      },
+      "creation_time": "2021-05-31T07:42:32.524Z",
+      "id": "6",
+      "references": [],
+      "title": "zrobic mozliwosc ponownego wyboru np zeby mona bylo kupic 2 lody i 3 kaw"
     },
     {
       "assignedTo": {

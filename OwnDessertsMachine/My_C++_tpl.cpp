@@ -1,6 +1,7 @@
 #include <iostream>
 #include <list>
 #include <vector>
+#include <iomanip>
 using namespace std;
 
 typedef int VectorIndex;
@@ -195,13 +196,14 @@ public:
     }
     void generateRecipt()
     {
+
         int tabulatorsCount;
         double sum = 0, paid;
         for (int i = 0; i < this->reciptItemList.size(); i++)
         {
             sum += this->reciptItemList.at(i).getPrice();
         }
-        cout << "\nDo zaplaty: " << sum;
+        cout << "\nDo zaplaty: " << setprecision(2) << fixed << sum;
         cout << "\nZaplacono: ";
         paid = billChange(sum);
         cout << "\n\n\n=================Paragon=================\n| Nazwa \t\t\tCena\t|\n";
@@ -209,10 +211,7 @@ public:
         for (int i = 0; i < this->reciptItemList.size(); i++)
         {
             tabulatorsCount = 4 - ((this->reciptItemList.at(i).getName().length() + 2) / 8);
-            //std::cout.width(30);
-            //std::cout << cout.fill('=') << "Paragon" << cout.fill('=');
             cout << "| " << this->reciptItemList.at(i).getName();
-            //std::cout << ('| ' + this->reciptItemList.at(i).getPrice()) << '|';
             for (int j = 0; j < tabulatorsCount; ++j)
             {
                 cout << "\t";
@@ -388,7 +387,7 @@ public:
             string name = iceCreamCupTypeList.at(i).getAddonName();
             double price = iceCreamCupTypeList.at(i).getAddonPrice();
             int maxScoops = iceCreamCupTypeList.at(i).getMaxScoops();
-            cout << (i + 1) << " - " << name << " (cena: " << price << " ,max galek: " << maxScoops << ")\n";
+            cout << (i + 1) << " - " << name << " (cena: " << setprecision(2) << fixed << price << " PLN, max galek: " << maxScoops << ")\n";
         }
     }
     static int getAvailableCupListSize()
@@ -442,7 +441,8 @@ private:
         {
             for (int i = 0; i < iceCreamList.size(); i++)
             {
-                cout << i + 1 << " - " << iceCreamList.at(i).getName() << "\n";
+                cout << i + 1 << " - " << iceCreamList.at(i).getName() << ", cena: " << setprecision(2) << fixed << iceCreamList.at(i).getPrice() << " PLN"
+                     << "\n";
             }
         }
 
@@ -458,7 +458,8 @@ private:
             {
                 if (iceCreamList.at(i).getCategoryIndex() == categoryIndex)
                 {
-                    cout << counter << " - " << iceCreamList.at(i).getName() << "\n";
+                    cout << counter << " - " << iceCreamList.at(i).getName() << " cena: " << setprecision(2) << fixed << iceCreamList.at(i).getPrice() << " PLN"
+                         << "\n";
                     listToReturn.push_back(MenuSelectItemFrontendBackendConnector(counter, i));
                     counter++;
                 }
@@ -663,7 +664,8 @@ private:
 
             for (int i = 0; i < coffeeList.size(); i++)
             {
-                cout << i + 1 << " - " << coffeeList.at(i).getName() << "\n";
+                cout << i + 1 << " - " << coffeeList.at(i).getName() << ", cena: " << setprecision(2) << fixed << coffeeList.at(i).getPrice() << " PLN"
+                     << "\n";
             }
         }
 
@@ -679,7 +681,8 @@ private:
             {
                 if (coffeeList.at(i).getCategoryIndex() == categoryIndex)
                 {
-                    cout << counter << " - " << coffeeList.at(i).getName() << "\n";
+                    cout << counter << " - " << coffeeList.at(i).getName() << ", cena: " << setprecision(2) << fixed << coffeeList.at(i).getPrice() << " PLN"
+                         << "\n";
                     listToReturn.push_back(MenuSelectItemFrontendBackendConnector(counter, i));
                     counter++;
                 }
@@ -899,7 +902,8 @@ private:
 
             for (int i = 0; i < cakeList.size(); i++)
             {
-                cout << i + 1 << " - " << cakeList.at(i).getName() << "\n";
+                cout << i + 1 << " - " << cakeList.at(i).getName() << ", cena: " << setprecision(2) << fixed << cakeList.at(i).getPrice() << " PLN"
+                     << "\n";
             }
         }
         int cakeSprinklesSelect(Receipt &cakeReceipt)
@@ -908,7 +912,7 @@ private:
             Cake::printCakeSprinklesList();
             cout << "Wpisz odpowiedni numer: ";
             int select;
-            select = UserInputController::validatedInput(Cake::getcakeSprinklesListSize());
+            select = UserInputController::validatedInput(Cake::getcakeSprinklesListSize() + 1);
             select--;
 
             double selectSprinklePrice = Cake::getSprinklePrice(select);
@@ -929,7 +933,8 @@ private:
             {
                 if (cakeList.at(i).getCategoryIndex() == categoryIndex)
                 {
-                    cout << counter << " - " << cakeList.at(i).getName() << "\n";
+                    cout << counter << " - " << cakeList.at(i).getName() << ", cena: " << setprecision(2) << fixed << cakeList.at(i).getPrice() << " PLN"
+                         << "\n";
                     listToReturn.push_back(MenuSelectItemFrontendBackendConnector(counter, i));
                     counter++;
                 }
@@ -1025,6 +1030,7 @@ public:
     void frontEndCore()
     {
         int selectedProductType;
+        int menuSize = 3;
         cout << "----------Witaj !----------\n";
 
         bool reOrder = false;
@@ -1035,7 +1041,7 @@ public:
             cout << "2 - Ciasto\n";
             cout << "3 - Kawa\n";
             cout << "Wpisz odpowiedni numer: \n";
-            cin >> selectedProductType;
+            selectedProductType = UserInputController::validatedInput(menuSize + 1);
             if (selectedProductType == 1) //Ice cream path
             {
                 Receipt receiptGeneratedByIceCreamMenu = iceCreamController.menuControler();
@@ -1070,13 +1076,13 @@ public:
 
     void machineSetup()
     {
-        //1. Budujemy Cake1 .. n
 
         //----------------------------------------------
         //------ start build coffee -----------
         int coffeeCategory1 = Coffee::addNewCoffeeCategory(CoffeeCategory("Bez kofeiny"));
         int coffeeCategory2 = Coffee::addNewCoffeeCategory(CoffeeCategory("Z kofeina"));
         int coffeeCategory3 = Coffee::addNewCoffeeCategory(CoffeeCategory("Bez cukru"));
+        int coffeeCategory4 = Coffee::addNewCoffeeCategory(CoffeeCategory("Pozostale"));
 
         coffeeController.addCoffeeToList(Coffee("Latte bez kofeiny", 11.9, coffeeCategory1));
         coffeeController.addCoffeeToList(Coffee("Espresso bez kofeiny", 6.9, coffeeCategory1));
@@ -1089,6 +1095,14 @@ public:
         coffeeController.addCoffeeToList(Coffee("Latte bez cukru", 10.4, coffeeCategory3));
         coffeeController.addCoffeeToList(Coffee("Espresso bez cukru", 5.4, coffeeCategory3));
         coffeeController.addCoffeeToList(Coffee("Latte Machiato bez cukru", 11.4, coffeeCategory3));
+
+        coffeeController.addCoffeeToList(Coffee("Ristretto Pozostale", 10.4, coffeeCategory4));
+        coffeeController.addCoffeeToList(Coffee("Espresso doppio Pozostale", 5.4, coffeeCategory4));
+        coffeeController.addCoffeeToList(Coffee("Cappuccino Pozostale", 11.4, coffeeCategory4));
+        coffeeController.addCoffeeToList(Coffee("Macchiato Pozostale", 10.4, coffeeCategory4));
+        coffeeController.addCoffeeToList(Coffee("Lungo / americano Pozostale", 5.4, coffeeCategory4));
+        coffeeController.addCoffeeToList(Coffee("Mocha Pozostale", 11.4, coffeeCategory4));
+        coffeeController.addCoffeeToList(Coffee("Romano", 21.4, coffeeCategory4));
         //------ end build coffee -----------
         //----------------------------------------------
 
@@ -1109,11 +1123,16 @@ public:
         cakeController.addCakeToList(Cake("Szarlotka bez glutenu", 2.8, cakeCategory3));
         cakeController.addCakeToList(Cake("Ciasto wisniowe bez glutenu", 3.4, cakeCategory3));
         cakeController.addCakeToList(Cake("Sernik bez glutenu", 3.3, cakeCategory3));
+        cakeController.addCakeToList(Cake("Tort Urodzinowy bez glutenu", 10.3, cakeCategory3));
+        cakeController.addCakeToList(Cake("Tort na 18 urodziny bez glutenu", 26.3, cakeCategory3));
+        cakeController.addCakeToList(Cake("Tort Jubilata bez glutenu", 30.3, cakeCategory3));
 
         Cake::addNewCakeSprinkle(CakeSprinkles("Czekoladowa", 0.65));
         Cake::addNewCakeSprinkle(CakeSprinkles("Kolorowe Cukierki", 0.9));
         Cake::addNewCakeSprinkle(CakeSprinkles("Zelki", 0.7));
         Cake::addNewCakeSprinkle(CakeSprinkles("Suszone owoce", 0.69));
+        Cake::addNewCakeSprinkle(CakeSprinkles("EKO", 2.69));
+        Cake::addNewCakeSprinkle(CakeSprinkles("Krolewska", 2.69));
         //------ end build Cake -----------
         //----------------------------------------------
 
@@ -1122,22 +1141,29 @@ public:
         IceCream::addNewCupType(IceCreamCupType("Slodki rozek", 1.5, 4));
         IceCream::addNewCupType(IceCreamCupType("Plastikowy kubeczek", 0.5, 2));
         IceCream::addNewCupType(IceCreamCupType("Wafelkowa salaterka", 1.1, 3));
+        IceCream::addNewCupType(IceCreamCupType("kubek ECO", 5.1, 3));
 
         int iceCreamCategory1 = IceCream::addNewIceCreamCategory(IceCreamCategory("Bez laktozy"));
         int iceCreamCategory2 = IceCream::addNewIceCreamCategory(IceCreamCategory("Bez glutenu"));
         int iceCreamCategory3 = IceCream::addNewIceCreamCategory(IceCreamCategory("Klasyczne"));
+        int iceCreamCategory4 = IceCream::addNewIceCreamCategory(IceCreamCategory("Pozostale"));
 
         iceCreamController.addIceCreamToList(IceCream("Karmelowy bez laktozy", 2.5, iceCreamCategory1));
         iceCreamController.addIceCreamToList(IceCream("Waniliowy bez laktozy", 2.3, iceCreamCategory1));
         iceCreamController.addIceCreamToList(IceCream("Malinowy bez laktozy", 2.4, iceCreamCategory1));
+        iceCreamController.addIceCreamToList(IceCream("Ananasowy bez laktozy", 2.4, iceCreamCategory1));
+        iceCreamController.addIceCreamToList(IceCream("Borowkowy bez laktozy", 2.4, iceCreamCategory1));
 
         iceCreamController.addIceCreamToList(IceCream("Karmelowy bez glutenu", 2.6, iceCreamCategory2));
         iceCreamController.addIceCreamToList(IceCream("Waniliowy bez glutenu", 2.4, iceCreamCategory2));
         iceCreamController.addIceCreamToList(IceCream("Malinowy bez glutenu", 2.5, iceCreamCategory2));
+        iceCreamController.addIceCreamToList(IceCream("Kiwi bez glutenu", 2.5, iceCreamCategory2));
 
         iceCreamController.addIceCreamToList(IceCream("Karmelowy", 2, iceCreamCategory3));
         iceCreamController.addIceCreamToList(IceCream("Waniliowy", 1.8, iceCreamCategory3));
         iceCreamController.addIceCreamToList(IceCream("Malinowy", 1.9, iceCreamCategory3));
+
+        iceCreamController.addIceCreamToList(IceCream("Malinowy - pozostale", 1.9, iceCreamCategory4));
 
         //------ end build ice cream -----------
         //----------------------------------------------
@@ -1151,30 +1177,3 @@ int main()
     machine1.frontEndCore();
     // system("PAUSE");
 }
-
-//TODO
-/*
-1. paragon podsumowanie + wprowadzenie kwoty przez usera + wydanie reszty + validacja 
-2. dorobić obsługę kategorii w lodach
-3. menu dla coffee 
-4. menu dla cake
-5. validacja 
-6. lody z alkoholem
-7. możliwość wyboru i lodow i ciastek np kupić 2 loady i 3 ciasta
-8. system do wydawnaie reszty  monet
-9. ZROBIĆ GŁÓWNA FUNCKJE DO WALIDACJI INPUTÓW
-
-
-TODO Szymon
-//1. menu dla coffee -> done
-2. menu dla cake
-3. isWithMilk() linie okolo 500 przeniszc cena mleka do setupu
-
-*/
-
-/*
-TODO możliwe funkcje virtualne
-1. printIceCreamListSelect
-2. printIceCreamListSelectByCategory
-
-*/
