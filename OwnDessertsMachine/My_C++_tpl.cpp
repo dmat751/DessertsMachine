@@ -1224,7 +1224,7 @@ public:
         cakeController.addCakeToList(Cake("Sernik z polewa czekoladowa", 3.0, cakeCategory2));
 
         cakeController.addCakeToList(Cake("Szarlotka bez glutenu", 2.8, cakeCategory3));
-        cakeController.addCakeToList(Cake("Ciasto wisniowe bez glutenu", 3.4, cakeCategory3));
+        cakeController.addCakeToList(Cake("Ciasto w  isniowe bez glutenu", 3.4, cakeCategory3));
         cakeController.addCakeToList(Cake("Sernik bez glutenu", 3.3, cakeCategory3));
         cakeController.addCakeToList(Cake("Tort bez glutenu", 10.3, cakeCategory3));
         cakeController.addCakeToList(Cake("Tort sliwkowy bez glutenu", 26.3, cakeCategory3));
