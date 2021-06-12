@@ -2,6 +2,7 @@
 #include <list>
 #include <vector>
 #include <iomanip>
+#include <algorithm>
 using namespace std;
 
 typedef int VectorIndex;
@@ -203,7 +204,7 @@ public:
         {
             sum += this->reciptItemList.at(i).getPrice();
         }
-        cout << "\nDo zaplaty: " << setprecision(2) << fixed << sum;
+        cout << "\n--------------------\nDo zaplaty: " << setprecision(2) << fixed << sum;
         cout << "\nZaplacono: ";
         paid = billChange(sum);
         cout << "\n\n\n=================Paragon=================\n| Nazwa \t\t\tCena\t|\n";
@@ -224,7 +225,7 @@ public:
         cout << "| Zaplacono:\t\t\t" << paid + sum << "\t|\n";
         cout << "| Reszta:\t\t\t" << paid << "\t|\n";
         cout << "=================Paragon=================\n";
-        cout << "koniec paragonu";
+        cout << "koniec paragonu\n";
     }
 };
 //--- end Recipt section ------
@@ -355,10 +356,15 @@ public:
     static void printIceCreamCategory()
     {
         int availableCategoryListSize = availableCategoryList.size();
-        cout << "Dostepne rodzaje lodow:\n";
+        cout << "--------------------\nDostepne rodzaje lodow:\n";
         for (int i = 0; i < availableCategoryListSize; i++)
         {
-            cout << i + 1 << " - " << availableCategoryList.at(i).getCategoryName() << "\n";
+            cout << i + 1;
+            if (i < 9)
+            {
+                cout << " ";
+            }
+            cout << " - " << availableCategoryList.at(i).getCategoryName() << "\n";
         }
     }
 
@@ -387,7 +393,13 @@ public:
             string name = iceCreamCupTypeList.at(i).getAddonName();
             double price = iceCreamCupTypeList.at(i).getAddonPrice();
             int maxScoops = iceCreamCupTypeList.at(i).getMaxScoops();
-            cout << (i + 1) << " - " << name << " (cena: " << setprecision(2) << fixed << price << " PLN, max galek: " << maxScoops << ")\n";
+            int tabulatorsCount = 4 - ((name.length() + 4) / 8);
+            cout << (i + 1) << " - " << name;
+            for (int j = 0; j < tabulatorsCount; ++j)
+            {
+                cout << "\t";
+            }
+            cout << "(cena: " << setprecision(2) << fixed << price << " PLN, max galek: " << maxScoops << ")\n";
         }
     }
     static int getAvailableCupListSize()
@@ -415,9 +427,9 @@ private:
         }
         int cupTypeSelect(Receipt &iceCreamReceipt)
         {
-            cout << "\nWybierz typ kubka\n";
+            cout << "\n--------------------\nWybierz typ kubka\n";
             IceCream::printAvailableCupList();
-            cout << "Wpisz odpowiedni numer: ";
+            cout << "--------------------\nWpisz odpowiedni numer: ";
             bool inputedAmountIsError = true;
 
             int select = UserInputController::validatedInput(IceCream::getAvailableCupListSize() + 1);
@@ -432,16 +444,28 @@ private:
         int scoopsAmountSelect(int maxAmountOfScoopsPerCup)
         {
             int inputedScoopsAmount;
-            cout << "Ile chcesz galek lodow ?\n";
+            cout << "--------------------\nIle chcesz galek lodow ?\n";
             inputedScoopsAmount = UserInputController::validatedInput(maxAmountOfScoopsPerCup + 1);
             return inputedScoopsAmount;
         }
 
         void printIceCreamListSelect(vector<IceCream> &iceCreamList)
         {
+            cout << "---------------\n";
             for (int i = 0; i < iceCreamList.size(); i++)
             {
-                cout << i + 1 << " - " << iceCreamList.at(i).getName() << ", cena: " << setprecision(2) << fixed << iceCreamList.at(i).getPrice() << " PLN"
+                int tabulatorsCount = 4 - ((iceCreamList.at(i).getName().length() + 5) / 8);
+                cout << i + 1;
+                if (i < 9)
+                {
+                    cout << " ";
+                }
+                cout << " - " << iceCreamList.at(i).getName();
+                for (int j = 0; j < tabulatorsCount; ++j)
+                {
+                    cout << "\t";
+                }
+                cout << "cena: " << setprecision(2) << fixed << iceCreamList.at(i).getPrice() << " PLN"
                      << "\n";
             }
         }
@@ -453,12 +477,25 @@ private:
             {
                 return listToReturn;
             }
+            cout << "---------------\n";
             int counter = 1;
             for (int i = 0; i < iceCreamList.size(); i++)
             {
                 if (iceCreamList.at(i).getCategoryIndex() == categoryIndex)
                 {
-                    cout << counter << " - " << iceCreamList.at(i).getName() << " cena: " << setprecision(2) << fixed << iceCreamList.at(i).getPrice() << " PLN"
+                    int tabulatorsCount = 4 - ((iceCreamList.at(i).getName().length() + 5) / 8);
+
+                    cout << counter;
+                    if (counter < 9)
+                    {
+                        cout << " ";
+                    }
+                    cout << " - " << iceCreamList.at(i).getName();
+                    for (int j = 0; j < tabulatorsCount; ++j)
+                    {
+                        cout << "\t";
+                    }
+                    cout << " cena: " << setprecision(2) << fixed << iceCreamList.at(i).getPrice() << " PLN"
                          << "\n";
                     listToReturn.push_back(MenuSelectItemFrontendBackendConnector(counter, i));
                     counter++;
@@ -479,7 +516,7 @@ private:
             int sortByCategoryOptionIndex = iceCreamListSize;
             for (int i = 0; i < selectedScoopsAmount; i++)
             {
-                cout << "Wybierz smak lodow: " << i + 1 << "\n";
+                cout << "--------------------\nWybierz smak lodow: " << i + 1 << "\n";
                 printIceCreamListSelect(iceCreamList);
                 cout << iceCreamListSize + 1 << " - Posortuj po kategorii\n";
                 selectedIndex = UserInputController::validatedInput(iceCreamListSize + 2);
@@ -528,7 +565,7 @@ public:
     {
         Receipt iceCreamReceipt;
         // -- user select info --
-        cout << "Wybrales lody\n";
+        cout << "--------------------\nWybrales lody\n";
 
         // -- cup type select --
         int selectedCupIndex = menuControllerTools.cupTypeSelect(iceCreamReceipt);
@@ -604,10 +641,15 @@ public:
     static void printCoffeeCategory()
     {
         int availableCategoryListSize = availableCategoryList.size();
-        cout << "Dostepne rodzaje kawy:\n";
+        cout << "--------------------\nDostepne rodzaje kawy:\n";
         for (int i = 0; i < availableCategoryListSize; i++)
         {
-            cout << i + 1 << " - " << availableCategoryList.at(i).getCategoryName() << "\n";
+            cout << i + 1;
+            if (i < 9)
+            {
+                cout << " ";
+            }
+            cout << " - " << availableCategoryList.at(i).getCategoryName() << "\n";
         }
     }
 };
@@ -630,7 +672,7 @@ private:
             cin >> selectedOption;
             if (selectedOption == '1')
             {
-                cout << "\n-------\nWybrany deser zostanie zapakowany w opakowanie.\n";
+                cout << "\n--------------------\nWybrany deser zostanie zapakowany w opakowanie.\n";
                 return 1.50;
             }
             return 0;
@@ -643,7 +685,7 @@ private:
             cin >> selectedOption;
             if (selectedOption == '1')
             {
-                cout << "\n-------\nDodaje mleko.\n";
+                cout << "\n--------------------\nDodaje mleko.\n";
                 return 1.20;
             }
             return 0;
@@ -661,10 +703,21 @@ private:
 
         void printCoffeeListSelect(vector<Coffee> &coffeeList)
         {
-
+            cout << "---------------\n";
             for (int i = 0; i < coffeeList.size(); i++)
             {
-                cout << i + 1 << " - " << coffeeList.at(i).getName() << ", cena: " << setprecision(2) << fixed << coffeeList.at(i).getPrice() << " PLN"
+                int tabulatorsCount = 5 - ((coffeeList.at(i).getName().length() + 5) / 8);
+                cout << i + 1;
+                if (i < 9)
+                {
+                    cout << " ";
+                }
+                cout << " - " << coffeeList.at(i).getName();
+                for (int j = 0; j < tabulatorsCount; ++j)
+                {
+                    cout << "\t";
+                }
+                cout << "cena: " << setprecision(2) << fixed << coffeeList.at(i).getPrice() << " PLN"
                      << "\n";
             }
         }
@@ -676,12 +729,24 @@ private:
             {
                 return listToReturn;
             }
+            cout << "---------------\n";
             int counter = 1;
             for (int i = 0; i < coffeeList.size(); i++)
             {
                 if (coffeeList.at(i).getCategoryIndex() == categoryIndex)
                 {
-                    cout << counter << " - " << coffeeList.at(i).getName() << ", cena: " << setprecision(2) << fixed << coffeeList.at(i).getPrice() << " PLN"
+                    cout << counter;
+                    if (counter < 10)
+                    {
+                        cout << " ";
+                    }
+                    int tabulatorsCount = 5 - ((coffeeList.at(i).getName().length() + 5) / 8);
+                    cout << " - " << coffeeList.at(i).getName();
+                    for (int j = 0; j < tabulatorsCount; ++j)
+                    {
+                        cout << "\t";
+                    }
+                    cout << "cena: " << setprecision(2) << fixed << coffeeList.at(i).getPrice() << " PLN"
                          << "\n";
                     listToReturn.push_back(MenuSelectItemFrontendBackendConnector(counter, i));
                     counter++;
@@ -700,9 +765,9 @@ private:
             int categorySelectedIndex;
             int coffeeListSize = coffeeList.size();
             int sortByCategoryOptionIndex = coffeeListSize;
-            cout << "Czy chcesz wziac kawe na wynos?\n";
+            cout << "--------------------\nCzy chcesz wziac kawe na wynos?\n";
             takeAwaySelect(coffeeReceipt);
-            cout << "Wybierz rodzaj kawy: "
+            cout << "--------------------\nWybierz rodzaj kawy: "
                  << "\n";
             printCoffeeListSelect(coffeeList);
             cout << coffeeListSize + 1 << " - Posortuj po kategorii\n";
@@ -727,7 +792,7 @@ private:
             string selectCoffeeName = coffeeList.at(selectedIndex).getName();
             coffeeReceipt.addItemToReceipt(ReciptItem(selectCoffeePrice, selectCoffeeName));
 
-            cout << "Czy chcesz dodac mleko?\n";
+            cout << "--------------------\nCzy chcesz dodac mleko?\n";
             milkSelect(coffeeReceipt);
         }
     };
@@ -753,7 +818,7 @@ public:
     {
         Receipt coffeeReceipt;
         // -- user select info --
-        cout << "Wybrales kawe\n";
+        cout << "--------------------\nWybrales kawe\n";
 
         menuControllerTools.coffeeTypeSelect(this->coffeeList, coffeeReceipt);
         return coffeeReceipt;
@@ -849,10 +914,15 @@ public:
     printCakeCategory()
     {
         int availableCategoryListSize = availableCategoryList.size();
-        cout << "Dostepne rodzaje ciast:\n";
+        cout << "--------------------\nDostepne rodzaje ciast:\n";
         for (int i = 0; i < availableCategoryListSize; i++)
         {
-            cout << i + 1 << " - " << availableCategoryList.at(i).getCategoryName() << "\n";
+            cout << i + 1;
+            if (i < 9)
+            {
+                cout << " ";
+            }
+            cout << " - " << availableCategoryList.at(i).getCategoryName() << "\n";
         }
         //        cout << availableCategoryListSize + 1 << " - Bez kategorii\n";
     }
@@ -863,7 +933,18 @@ public:
         {
             string name = cakeSprinklesList.at(i).getAddonName();
             double price = cakeSprinklesList.at(i).getAddonPrice();
-            cout << (i + 1) << " - " << name << " (cena: " << price << ")\n";
+            cout << i + 1;
+            if (i < 9)
+            {
+                cout << " ";
+            }
+            int tabulatorsCount = 5 - ((name.length() + 5) / 8);
+            cout << " - " << name;
+            for (int j = 0; j < tabulatorsCount; ++j)
+            {
+                cout << "\t";
+            }
+            cout << "cena: " << price << " PLN\n";
         }
     }
 };
@@ -886,7 +967,7 @@ private:
             cin >> selectedOption;
             if (selectedOption == '1')
             {
-                cout << "\n-------\nWybrany deser zostanie zapakowany w opakowanie.\n";
+                cout << "\n--------------------\nWybrany deser zostanie zapakowany w opakowanie.\n";
                 return 1.50;
             }
             return 0;
@@ -899,16 +980,26 @@ private:
 
         void printCakeListSelect(vector<Cake> &cakeList)
         {
-
             for (int i = 0; i < cakeList.size(); i++)
             {
-                cout << i + 1 << " - " << cakeList.at(i).getName() << ", cena: " << setprecision(2) << fixed << cakeList.at(i).getPrice() << " PLN"
+                int tabulatorsCount = 5 - ((cakeList.at(i).getName().length() + 5) / 8);
+                cout << i + 1;
+                if (i < 9)
+                {
+                    cout << " ";
+                }
+                cout << " - " << cakeList.at(i).getName();
+                for (int j = 0; j < tabulatorsCount; ++j)
+                {
+                    cout << "\t";
+                }
+                cout << "cena: " << setprecision(2) << fixed << cakeList.at(i).getPrice() << " PLN"
                      << "\n";
             }
         }
         int cakeSprinklesSelect(Receipt &cakeReceipt)
         {
-            cout << "\nWybierz typ posypki\n";
+            cout << "\n--------------------\nWybierz typ posypki\n";
             Cake::printCakeSprinklesList();
             cout << "Wpisz odpowiedni numer: ";
             int select;
@@ -929,11 +1020,23 @@ private:
                 return listToReturn;
             }
             int counter = 1;
+            cout << "---------------\n";
             for (int i = 0; i < cakeList.size(); i++)
             {
                 if (cakeList.at(i).getCategoryIndex() == categoryIndex)
                 {
-                    cout << counter << " - " << cakeList.at(i).getName() << ", cena: " << setprecision(2) << fixed << cakeList.at(i).getPrice() << " PLN"
+                    int tabulatorsCount = 5 - ((cakeList.at(i).getName().length() + 5) / 8);
+                    cout << counter;
+                    if (i < 9)
+                    {
+                        cout << " ";
+                    }
+                    cout << " - " << cakeList.at(i).getName();
+                    for (int j = 0; j < tabulatorsCount; ++j)
+                    {
+                        cout << "\t";
+                    }
+                    cout << "cena: " << setprecision(2) << fixed << cakeList.at(i).getPrice() << " PLN"
                          << "\n";
                     listToReturn.push_back(MenuSelectItemFrontendBackendConnector(counter, i));
                     counter++;
@@ -952,9 +1055,9 @@ private:
             int categorySelectedIndex;
             int cakeListSize = cakeList.size();
             int sortByCategoryOptionIndex = cakeListSize;
-            cout << "Czy chcesz wziac ciasto na wynos?\n";
+            cout << "--------------------\nCzy chcesz wziac ciasto na wynos?\n";
             takeAwaySelect(cakeReceipt);
-            cout << "Wybierz rodzaj ciasta: "
+            cout << "--------------------\nWybierz rodzaj ciasta: "
                  << "\n";
             printCakeListSelect(cakeList);
             cout << cakeListSize + 1 << " - Posortuj po kategorii\n";
@@ -1002,7 +1105,7 @@ public:
     {
         Receipt cakeReceipt;
         // -- user select info --
-        cout << "Wybrales ciasto\n";
+        cout << "--------------------\nWybrales ciasto\n";
 
         menuControllerTools.cakeTypeSelect(this->cakeList, cakeReceipt);
         menuControllerTools.cakeSprinklesSelect(cakeReceipt);
@@ -1036,11 +1139,11 @@ public:
         bool reOrder = false;
         do
         {
-            cout << "Na co masz ochote?\n";
+            cout << "--------------------\nNa co masz ochote?\n";
             cout << "1 - Lody\n";
             cout << "2 - Ciasto\n";
             cout << "3 - Kawa\n";
-            cout << "Wpisz odpowiedni numer: \n";
+            cout << "--------------------\nWpisz odpowiedni numer: \n";
             selectedProductType = UserInputController::validatedInput(menuSize + 1);
             if (selectedProductType == 1) //Ice cream path
             {
@@ -1057,11 +1160,11 @@ public:
                 Receipt receiptGeneratedByCoffeeMenu = coffeeController.menuControler();
                 machineReceipt.addReceiptToEachOther(receiptGeneratedByCoffeeMenu);
             }
-            cout << "Czy chcesz zamowic cos jeszcze?\n";
-            cout << "T - tak, Dowolna wartosc - nie\n";
+            cout << "--------------------\nCzy chcesz zamowic cos jeszcze?\n";
+            cout << "1 - Tak\nDowolna wartosc - Nie\n";
             char reOrderSelect;
             cin >> reOrderSelect;
-            if (reOrderSelect == 'T' || reOrderSelect == 't')
+            if (reOrderSelect == '1')
             {
                 reOrder = true;
             }
@@ -1123,8 +1226,8 @@ public:
         cakeController.addCakeToList(Cake("Szarlotka bez glutenu", 2.8, cakeCategory3));
         cakeController.addCakeToList(Cake("Ciasto wisniowe bez glutenu", 3.4, cakeCategory3));
         cakeController.addCakeToList(Cake("Sernik bez glutenu", 3.3, cakeCategory3));
-        cakeController.addCakeToList(Cake("Tort Urodzinowy bez glutenu", 10.3, cakeCategory3));
-        cakeController.addCakeToList(Cake("Tort na 18 urodziny bez glutenu", 26.3, cakeCategory3));
+        cakeController.addCakeToList(Cake("Tort bez glutenu", 10.3, cakeCategory3));
+        cakeController.addCakeToList(Cake("Tort sliwkowy bez glutenu", 26.3, cakeCategory3));
         cakeController.addCakeToList(Cake("Tort Jubilata bez glutenu", 30.3, cakeCategory3));
 
         Cake::addNewCakeSprinkle(CakeSprinkles("Czekoladowa", 0.65));
